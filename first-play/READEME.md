@@ -349,9 +349,21 @@ const (
 
 - Go 语言预定义了这些常量：true、false 和 iota,其中比较特殊的常量：iota，可以被认为是一个可以被编译器修改的常量，遇到const关键字，即被重置为0(即const内部的第一行之前)，const内每增加一行，就是的iota被计数一次
 
-## golang内置类型
+## golang数据类型
 
-- 当某个参数类型为golang内置类型时，传递的是副本
+- 其中golang的数字类型、布尔型、字符型被称为内置类型，当某个参数类型为golang内置类型时，传递的是副本
+- golang派生类型：
+
+```txt
+(a) 指针类型（Pointer）
+(b) 数组类型
+(c) 结构化类型(struct)
+(d) Channel 类型
+(e) 函数类型
+(f) 切片类型
+(g) 接口类型（interface）
+(h) Map 类型 
+```
 
 ### golang内置数据类型-数值类型-整型int
 
@@ -591,6 +603,21 @@ func main(){
 
 ### golang引用类型-channel
 
+- chan是golang语言中核心类型
+- 第一次接触chan，直接可以将其看作是管道就行了，既然是管道，就可以是单向管道，也可以是双向管道：https://www.runoob.com/w3cnote/go-channel-intro.html#Channel%E7%B1%BB%E5%9E%8B
+- 通过chan就可以并发核心单元(稍后会解释)，就可以发送/接收数据
+- 其本质是队列，且线程安全，自带锁的功能
+- 操作符：<-，箭头的指向就是数据的流向,没有指定方向，那么channel就是双向，既可以接受数据，也可以发送数据
+- 必须是先创建再使用
+
+- channel类型的定义格式：
+
+```golang
+ChannelType = ( "chan" | "chan" "<-" | "<-" "chan" ) ElementType .
+
+
+```
+
 ### golang引用类型-interface
 
 ## golang结构类型
@@ -744,3 +771,5 @@ https://cloud.tencent.com/developer/article/1386519
 http://c.biancheng.net/view/23.html
 
 https://studygolang.com/articles/5296
+
+https://haicoder.net/golang/golang-mutex.html
