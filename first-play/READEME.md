@@ -215,6 +215,64 @@ func main(){
 }
 ```
 
+- 变量的作用域，分为局部作用域和全局作用域，先来说局部作用域：
+
+```golang
+//变量是有其作用域的，先说明局部变量的作用域
+package main
+import "fmt"
+
+func main(){
+    //声明局部变量，通过{}声明局部变量域
+    {
+        name := "Harry Porter"
+        fmt.Println("Name = ", name)
+    }
+
+    fmt.Println("Hello")
+    fmt.Println("执行到我这里会报错，因为我试图访问局部变量name", name)
+
+}
+
+//另外一个局部变量域
+func anotherMain(){
+    for i :=0 ; i < 3; i++{
+        fmt.Print(i)
+        fmt.Print("\n")
+    }
+}
+
+fmt.Println("我不会执行的，也会报错的，因为超出了变量i的作用域",i)
+```
+
+- golang全局作用域，全局变量：在函数之外声明的变量,同时分为两类，一类是包内使用的相当于private，其变量名首字母是小写的。第二类是包外使用，变量名首字母大写。
+在 Go 语言中，变量、结构体、函数的导出属性是通过它们的首字母大小写来决定的。首字母大写的变量、结构体、或者函数都是导出的，它们可以在整个程序的任何位置，任何包进行访问。
+首字母小写的全局变量，结构体、或者函数只能在本包进行访问。
+
+```golang
+package main
+import "fmt"
+
+//声明了全局变量，即在func之外声明的变量，但是该变量只能在该main函数包内使用，因为首字母是小写n
+var name = "Harry Porter"
+
+func main(){
+    fmt.Println("我是可以访问到name的，", name)
+}
+```
+
+```golang
+package main
+import "fmt"
+
+//声明了main包外都可以使用的全局变量，因为其首字母N是大写的
+var Name = "Global Harry Porter"
+
+func main(){
+    fmt.Pritnln("Name是可以在所有地方使用到的全局变量，因为其N是大写的")
+}
+```
+
 - golang常量，表示程序运行期间不会再被修改的量，其数据类型可以是boolean, 数字型(整型，浮点型，复数)和字符串类型
 
 ```golang
@@ -291,15 +349,17 @@ const (
 
 - Go 语言预定义了这些常量：true、false 和 iota,其中比较特殊的常量：iota，可以被认为是一个可以被编译器修改的常量，遇到const关键字，即被重置为0(即const内部的第一行之前)，const内每增加一行，就是的iota被计数一次
 
-## golang数据类型
+## golang内置类型
 
-### 整型int
+- 当某个参数类型为golang内置类型时，传递的是副本
+
+### golang内置数据类型-数值类型-整型int
 
 - 整型类型有很多：int, int8, int16, int32, int64,uint
 - 在32位系统中占4个字节，64位系统中占8个字节
 - 整数**默认**推动类型是int类型
 
-### 浮点数
+### golang内置数据类型-数值类型-浮点数
 
 - 只有float32, float64
 - 浮点数类型默认声明为64位
@@ -316,7 +376,7 @@ fmt.Printf("%T", f)
 var f = 3.14E2
 ```
 
-### 字符类型
+### golang内置数据类型-字符类型
 
 - golang中没有专门的字符类型，如果要存储单个字符，一般用byte保存
 - golang中字符串由字节组成，其他语言中字符串是由字符组成，这点是不同的
@@ -376,7 +436,166 @@ if number1 == number2{
 }
 ```
 
-### golang 注释
+### golang内置数据类型-布尔型
+
+- golang布尔型也被称为bool类型
+- bool只允许取true, false, true, false本身也是golang的常量
+- bool占1个字节，默认值为false
+- 用于流程控制和条件判断
+
+```golang
+package main
+import "fmt"
+
+func main(){
+    fmt.Println("Hello")
+    var isOk bool
+    var isOneline = true
+    fmt.Println("isOk:", isOk, "isOnline: ", isOnline)//输出isOk: false, isOnline: true
+}
+```
+
+## golang引用类型
+
+- 当传递的参数，为一个函数的时候，传递的就是参数其本身，如果是内置类型，传递的是值的副本
+- 常见引用类型：切片，map, channel, interface和函数func类型
+
+### golang引用类型-切片
+
+- 英文名为slice
+- 切片，可以被理解为数组的引用
+- 切片是引用类型，遵守引用类型传递机制：即传递的是其本身，而不是值的副本
+- 切片使用和数组类似，遍历、访问切片元素、求切片的长度与数组都一样
+- 切片长度可以变化，不像数组是固定的
+- 切片是一个可以动态变化的数组
+
+- 创建切片,只需要指定切片类型，不需要指定切片的长度：
+
+```golang
+// var sliceName []Type: Type是每个元素的类型
+
+package main
+import (
+    "fmt"
+)
+
+func main(){
+    //创建了一个有2个元素，且每个元素都是string类型的切片，创建的同时完成初始化
+    var slieceString = []string{"Stringa", "Stringb"}
+    fmt.Println("slieceString=", slieceString)//output: slieceString= [Stringa Stringb]
+}
+
+```
+
+```golang
+//获取切片类型
+//使用TypeOf函数，获取切片类型
+```
+
+- 查看切片类型，使用TypeOf函数：
+
+```golang
+package main
+import (
+    "fmt"
+    "reflect"
+)
+
+func main(){
+    fmt.Println("使用TypeOf查看切片类型")
+    var sliceString = []string{"stringa", "stringb"}
+    fmt.Println("sliceString type: ", reflect.TypeOf(sliceString))// output: sliceString type: []string
+}
+```
+
+- 访问切片元素，和访问数组一样：
+
+```golang
+package main
+import ("fmt")
+
+func main(){
+    var sliceString = []string{"stringa","stringb"}
+    fmt.Println("slieceString[0] = ", sliceString[0])
+    fmt.Println("slieceString[1] = ", sliceString[1])
+}
+```
+
+### golang引用类型-map
+
+- 是一个key-value的无序的集合
+- 可被称为关联数组或字典
+- 可根据指定的key，快速获取value
+- key可以是任何可以使用 == 进行比较的数据类型，比如：int, string, bool等
+- value可以是任意类型
+- 无序，所以每次遍历的顺序可能是不一致的
+
+- 声明，通过var关键字声明：
+
+```golang
+//var mapName map[keyType]valueType，声明一个key为keyType类型,value为valueType类型的map,名为mapName
+
+package main
+import (
+    "fmt"
+)
+
+func main(){
+    //map直接赋值使用的是：key:value的形式
+    herosMap := map[string]string{
+        "hero1":"宋江"
+        "hero2":"卢俊义"
+        "hero3":"徐达"
+    }
+    fmt.Println(herosMap) //output: map[hero1:宋江 hero2:卢俊义 hero3:徐达]
+}
+```
+
+- 获取map类型，依然是TypeOf函数：
+
+```golang
+package main
+import (
+    "fmt"
+    "reflect"
+)
+
+func main(){
+    herosMap := map[string]string{
+        "hero1":"宋江"
+        "hero2":"卢俊义"
+        "hero3":"徐达"
+    }
+    fmt.Println(reflect.TypeOf(herosMap))// output: map[string]string
+}
+```
+
+- 访问map元素，有且只能通过key来访问:
+
+```golang
+package main
+import (
+    "fmt"
+    "reflect"
+)
+
+func main(){
+    herosMap := map[string]string{
+        "hero1":"宋江"
+        "hero2":"卢俊义"
+        "hero3":"徐达"
+    }
+    fmt.Println(herosMap["hero3"])// output: 徐达
+}
+```
+
+### golang引用类型-channel
+
+### golang引用类型-interface
+
+## golang结构类型
+
+## golang 注释
 
 - 合理注释代码应当占总代码量的1/3
 - golang中分为单行注释和多行注释，允许嵌套使用：
@@ -417,6 +636,103 @@ func main(){
        * 非法的嵌套注释，不允许使用
     */
     fmt.Println("我根本没有机会被执行，因为上面有非法嵌套注释");
+}
+```
+
+### golang 运算符
+
+#### 算术运算符
+
+```txt
++	相加	A + B 输出结果 30
+-	相减	A - B 输出结果 -10
+*	相乘	A * B 输出结果 200
+/	相除	B / A 输出结果 2
+%	求余	B % A 输出结果 0
+++	自增	A++ 输出结果 11
+--	自减	A-- 输出结果 9
+```
+
+#### 关系运算符
+
+```txt
+==	检查两个值是否相等，如果相等返回 True 否则返回 False。	(A == B) 为 False
+!=	检查两个值是否不相等，如果不相等返回 True 否则返回 False。	(A != B) 为 True
+>	检查左边值是否大于右边值，如果是返回 True 否则返回 False。	(A > B) 为 False
+<	检查左边值是否小于右边值，如果是返回 True 否则返回 False。	(A < B) 为 True
+>=	检查左边值是否大于等于右边值，如果是返回 True 否则返回 False。	(A >= B) 为 False
+<=	检查左边值是否小于等于右边值，如果是返回 True 否则返回 False。	(A <= B) 为 True 
+```
+
+#### 逻辑运算符
+
+```txt
+&&	        逻辑 AND 运算符。 如果两边的操作数都是 True，则条件 True，否则为 False。 	        (A && B) 为 False
+||	        逻辑 OR 运算符。 如果两边的操作数有一个 True，则条件 True，否则为 False。	        (A || B) 为 True
+!	        逻辑 NOT 运算符。 如果条件为 True，则逻辑 NOT 条件 False，否则为 True。	            !(A && B) 为 True 
+```
+
+#### 位运算符
+
+```txt
+&	        按位与运算符"&"是双目运算符。 其功能是参与运算的两数各对应的二进位相与。 	                                        (A & B) 结果为 12, 二进制为 0000 1100
+|	        按位或运算符"|"是双目运算符。 其功能是参与运算的两数各对应的二进位相或	                                            (A | B) 结果为 61, 二进制为 0011 1101
+^	        按位异或运算符"^"是双目运算符。 其功能是参与运算的两数各对应的二进位相异或，当两对应的二进位相异时，结果为1。	        (A ^ B) 结果为 49, 二进制为 0011 0001
+<<	        左移运算符"<<"是双目运算符。左移n位就是乘以2的n次方。 其功能把"<<"左边的运算数的各二进位全部左移若干位，由"<<"右边的数指定移动的位数，高位丢弃，低位补0。 	A << 2 结果为 240 ，二进制为 1111 0000
+>>	        右移运算符">>"是双目运算符。右移n位就是除以2的n次方。 其功能是把">>"左边的运算数的各二进位全部右移若干位，">>"右边的数指定移动的位数。 	A >> 2 结果为 15 ，二进制为 0000 1111
+```
+
+#### 赋值运算符
+
+```txt
+
+=	                简单的赋值运算符，将一个表达式的值赋给一个左值	   C = A + B 将 A + B 表达式结果赋值给 C
++=	                相加后再赋值	                                C += A 等于 C = C + A
+-=	                相减后再赋值	                                C -= A 等于 C = C - A
+*=	                相乘后再赋值	                                C *= A 等于 C = C * A
+/=	                相除后再赋值	                                C /= A 等于 C = C / A
+%=	                求余后再赋值	                                C %= A 等于 C = C % A
+<<=	                左移后赋值 	                                    C <<= 2 等于 C = C << 2
+>>=	                右移后赋值 	                                    C >>= 2 等于 C = C >> 2
+&=	                按位与后赋值	                                C &= 2 等于 C = C & 2
+^=	                按位异或后赋值	                                C ^= 2 等于 C = C ^ 2
+|=	                按位或后赋值	                                C |= 2 等于 C = C | 2
+```
+
+#### 其他运算符
+
+```txt
+&	                返回变量存储地址	                &a; 将给出变量的实际地址。
+*	                获取指针变量对应的值                *a; 是一个指针变量
+```
+
+```golang
+package main
+import "fmt"
+func main(){
+    var a int = -4
+    var b int32
+    var c float32
+    var ptr *int
+
+    fmt.Printf("第 1 行 - a 变量类型为 = %T\n", a );
+    fmt.Printf("第 2 行 - b 变量类型为 = %T\n", b );
+    fmt.Printf("第 3 行 - c 变量类型为 = %T\n", c );
+
+    /*  & 和 * 运算符实例 */
+    ptr = &a     /* 'ptr' 包含了 'a' 变量的地址 */
+    fmt.Printf("a 的值为  %d\n", a);
+    fmt.Printf("*ptr 为 %d\n", *ptr);
+
+
+    //总结
+    var aa = 100 //int类型，值为100
+    var bb *int = &a //只是声明获取int类型指针变量地址，归根结底其还是一个地址，就是指针
+    //或者
+    var bbb = &a //类型推导，获取bbb作为一个int类型的指针
+    //使用，不管是推导方式，还是显式声明的，都需要通过*variable方式
+    fmt.Println("获取bb的值:", *bb)
+    fmt.Println("获取bbb的值:", *bbb)
 }
 ```
 
