@@ -95,6 +95,31 @@ fmt.Println("hello\rworld!")
 //所以记住：要换行，就使用\r\n
 ```
 
+- golang是静态类型语言，意味着编译期就会对变量类型进行检查，变量需要有明确类型
+- int类型默认值为0，float类型默认值为0.0，boolean类型默认为false, String类型默认值为空字符串，指针类型默认值为nil
+
+```txt
+bool 	    布尔类型
+string 	    字符串类型
+int 	    整型
+int8 	    整型
+int16 	    整型
+int32 	    整型
+int64 	    整型
+uint 	    无符号整型
+uint8 	    无符号整型
+uint16 	    无符号整型
+uint32 	    无符号整型
+uint64 	    无符号整型
+uintptr 	指针类型
+byte 	uint8 的别名
+rune 	int32 的别名 代表一个 Unicode 码
+float32 	浮点型
+float64 	浮点型
+complex64 	复数类型
+complex128 	复数类型
+```
+
 - 变量定义：
 
 ```golang
@@ -136,7 +161,7 @@ var n1, s1 = 10, "string 1"
 n1 s1 := 10, "string1"
 ```
 
-- 声明全局变量:
+- 批量声明:
 
 ```golang
 var (
@@ -144,6 +169,127 @@ var (
     age = 30
 )
 ```
+
+- 全局变量声明：
+
+```golang
+
+package main
+import "fmt"
+//函数体之外声明的变量，被称为全局变量
+var globalVariable = 10
+func main(){
+    fmt.Println(globalVariable)
+}
+```
+
+- 匿名变量：
+
+```golang
+//golang中，一个函数可以返回多个返回值，而如果某个返回值只是声明却不使用，golang运行该程序就会报错。
+//当函数的多个返回值，有的返回值不想用的时候，用匿名变量代替，即可避免编译期报错
+package main
+import "fmt"
+
+func returnMultipleValues(){
+    return 0, 11
+}
+
+func main(){
+    x, y := returnMultipleValues()
+    fmt.Println("程序会报错，因为仅仅使用了x，没有使用y",x)
+}
+```
+
+```golang
+package main
+import "fmt"
+
+func returnMultipleValues(){
+    return 0, 11
+}
+
+func main(){
+    x, _ := returnMultipleValues()
+    fmt.Println("程序不会报错，因为虽然仅仅使用了x，但是使用了匿名变量_",x)
+}
+```
+
+- golang常量，表示程序运行期间不会再被修改的量，其数据类型可以是boolean, 数字型(整型，浮点型，复数)和字符串类型
+
+```golang
+//声明：const identifier [data type] = value
+//可以显式声明
+const b string = "abc"
+//也可以隐式声明
+const anotherB = "abc"
+```
+
+- golang的常量也可以用作枚举用途
+
+```golang
+const (
+    Unknown = 0
+    Female = 1
+    Male = 2
+)
+```
+
+- golang常量仅可以使用内置函数对其进行计算，比如len(), cap(), unsafe.SizeOf()等计算。函数必须是内置函数，否则编译会报错
+
+```golang
+package main
+import "unsafe"
+const (
+    a = "abc"
+    b = len(a)
+    c = unsafe.Sizeof(a)
+)
+func main(){
+    println(a, b, c)
+}
+```
+
+- 由于常量的赋值是一个编译期行为，所以右值不能出现任何需要运行期才能得出结果的表达式，比如试图以如下方式定义常量就会导致编译错误:
+
+```golang
+const Home = os.GetEnv("HOME") //os.GetEnv("HOME")明显是运行期才能得到结果，所以编译会报错，右边无法作为值并被赋值给Home常量
+```
+
+- 如果两个const的赋值语句的表达式是一样的，那么可以省略后一个赋值表达式
+
+```golang
+//https://studygolang.com/articles/5296
+
+const (       // iota被重设为0
+    c0 = iota // c0 == 0
+    c1 = iota // c1 == 1
+    c2 = iota // c2 == 2
+)
+
+const (
+    a = 1 << iota // a == 1 (iota在每个const开头被重设为0)
+    b = 1 << iota // b == 2
+    c = 1 << iota // c == 4
+)
+```
+
+上面的代码可以被简写为
+
+```golang
+const (       // iota被重设为0
+    c0 = iota // c0 == 0
+    c1        // c1 == 1
+    c2        // c2 == 2
+)
+const (
+    a = 1 <<iota // a == 1 (iota在每个const开头被重设为0)
+    b            // b == 2
+    c            // c == 4
+)
+```
+
+- Go 语言预定义了这些常量：true、false 和 iota,其中比较特殊的常量：iota，可以被认为是一个可以被编译器修改的常量，遇到const关键字，即被重置为0(即const内部的第一行之前)，const内每增加一行，就是的iota被计数一次
 
 ## golang数据类型
 
@@ -230,6 +376,55 @@ if number1 == number2{
 }
 ```
 
+### golang 注释
+
+- 合理注释代码应当占总代码量的1/3
+- golang中分为单行注释和多行注释，允许嵌套使用：
+
+```golang
+//单行注释
+package main
+import "fmt"
+func main(){
+    //fmt.Println("这是单行注释，不会被执行")
+    fmt.Println("这里会被执行")
+    /* 这也是单行注释 */
+}
+```
+
+```golang
+//块注释
+package main
+import "fmt"
+func main(){
+    /*
+    * fmt.Println("这里是多行注释，不会被执行")
+    */
+    fmt.Println("hello world!")
+
+}
+```
+
+- 块注释不允许嵌套使用：
+
+```golang
+package main
+import "fmt"
+func main(){
+    /*
+    *单行注释
+     /**
+       * 非法的嵌套注释，不允许使用
+    */
+    fmt.Println("我根本没有机会被执行，因为上面有非法嵌套注释");
+}
+```
+
+
 ## resoruces
 
 https://cloud.tencent.com/developer/article/1386519
+
+http://c.biancheng.net/view/23.html
+
+https://studygolang.com/articles/5296
