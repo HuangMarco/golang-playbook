@@ -19,6 +19,204 @@ go version
 
 最大限度利用别人已有的网站资源，归为己用
 
+## golang func
+
+## golang func普通类型声明
+
+- 就是最简单的golang function的声明
+
+##  golang method
+
+- golang method是一种特殊类型的golang function
+- 通常需要面临的情况，就是不同的函数都需要处理同一份data，每次处理逻辑不同，需要使用的参数也不同
+- golang通过methods来定义特殊类型的func，目的是为了处理golang中的一些特殊的数据类型：receiver
+
+https://www.digitalocean.com/community/tutorials/defining-methods-in-go
+
+```golang
+package main
+
+import "fmt"
+
+//创建了struct类型的变量：Creature
+type Creature struct{
+    //Creature类型有2个字段
+    Name string
+    Greeting string
+}
+
+//声明和普通函数类似
+//只是在func关键字后面加上特殊的参数：指定method的receiver
+//receiver概念类似于java的class，即某个receiver拥有某个方法。以下面为例：
+//Creature类型拥有Greet方法
+//至此，Creature有了方法Greet
+//社区的命名规则：首字母变小写，即creature,但是你可以随意命名他，但是还是最好按照规范来
+func (c Creature) Greet(){
+    fmt.Printf("%s says %s", c.Name, c.Greeting)
+}
+
+func main(){
+    //创建Creature类型的变量marco
+    marco := Creature{
+        Name: "Marco",
+        Greeting: "Welcome to the golang world!",
+    }
+    //第一种调用Greet方法的方式
+    Creature.Greet(marco)
+    //第二种调用方式，与第一种效果相同
+    //社区推崇这种调用方式：通过dot notation来调用方法，使用到变量marco中默认golang为我们存储的Creature
+    marco.Greet()
+}
+
+//output:
+//Marco says Welcome to the golang world!
+
+```
+
+```golang
+//第二种方式证明为什么建议使用第二种方式来做golang中的方法调用
+
+package main
+
+import "fmt"
+
+type Creature struct{
+    Name string
+    Greeting string
+}
+
+//为类型Creature定义方法Greet同时返回一个Creature
+func (creature Creature) Greet() Creature{
+    fmt.Printf("%s says %s !\n", c.Name, c.Greeting)
+}
+//为类型Creature定义方法SayGoodbye，接收一个参数
+func (creature Creature) SayGoodbye(name string){
+    fmt.Println("Farewell", name, "!")
+}
+
+func main(){
+    marco := Creature{
+        Name: "Marco",
+        Greeting: "Hello!"
+    }
+
+    //这种调用方式更加高效，但是同时要求方法Greet返回一个Creature
+    marco.Greet().SayGoodbye("golang")
+    //比较低效的证明
+    Creature.SayGoodbye(Creature.Greet(marco), "golang")
+}
+
+//output:
+//Marco says Hello!
+//Farewell golang!
+//Marco says Hello!
+//Farewell golang!
+
+```
+
+### golang method 声明- methods on values/pointers
+
+- 分为methods on values和methods on pointers: https://golang.org/doc/faq#methods_on_values_or_pointers
+- 考虑的重点是：你是否有需求去修改传人类型的本身
+
+```golang
+
+func (s *MyStruct) pointerMethod() { } // method on pointer
+func (s MyStruct)  valueMethod()   { } // method on value
+
+func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+    //...
+}
+```
+
+
+```golang
+
+package main
+ 
+import "fmt"
+ 
+type Mutatable struct {
+    a int
+    b int
+}
+
+//不会改变receiver
+func (m Mutatable) StayTheSame() {
+    m.a = 5
+    m.b = 7
+}
+//会改变receiver
+func (m *Mutatable) Mutate() {
+    m.a = 5
+    m.b = 7
+}
+ 
+func main() {
+    m := &Mutatable{0, 0}
+    fmt.Println(m)
+    m.StayTheSame()
+    fmt.Println(m)
+    m.Mutate()
+
+
+//output:
+//&{0 0}
+//&{0 0}
+//&{5 7}
+```
+
+## golang引用类型-interface
+
+- golang中，interface类型和java中的接口功能类似，如果声明了interface类型，在interface类型中声明所有需要被实现的方法，带调用时，当某种类型的变量被指定为interface类型，那么该类型必须实现interface中声明的所有方法
+
+- golang interface声明
+
+```golang
+type yourInterface interface{
+    //为该接口yourInterface声明方法String()
+    String() string
+}
+
+package main
+
+import {
+
+    "fmt"
+    "strings"
+}
+
+//声明一个结构类型，名为Ocean
+type Ocean struct{
+    Creatures []string
+}
+
+//结构类型Ocean声明并实现方法String()
+func (ocean Ocean) String() string {
+    return strings.Join(ocean.Creatures, ", ")
+}
+
+func log(header string, s fmt.Stringer){
+    fmt.Println(header, ":", s)
+}
+
+func main(){
+    ocean := Ocean{
+        Creatures: []string{
+            "sea urchin",
+            "lobster",
+            "shark",
+        }
+    }
+}
+
+log("The creatures in ocean:", ocean)
+
+//如果Ocean没有实现String()方法，就会报错
+// src/e4/main.go:24:6: cannot use o (type Ocean) as type fmt.Stringer in argument to log:
+        // Ocean does not implement fmt.Stringer (missing String method)
+```
+
 ### golang标识符
 
 https://haicoder.net/golang/golang-identifier.html
@@ -618,8 +816,6 @@ ChannelType = ( "chan" | "chan" "<-" | "<-" "chan" ) ElementType .
 
 ```
 
-### golang引用类型-interface
-
 ## golang结构类型
 
 ## golang 注释
@@ -802,6 +998,7 @@ https://wizardforcel.gitbooks.io/go42/content/content/42_17_type.html
 
 ```golang
 //golang1.9之前：
+//定义新类型
 type byte uint8
 type rune int32
 //golang1.9之后：
@@ -813,6 +1010,8 @@ type rune = int32
 
 - 既可以使用type关键字定义一个新的结构体
 - 也可以使用type关键字，以一个已存在的类型作为基础类型，定义新类型，被称为自定义类型
+- 定义过的类型也就拥有了新的特性
+- 新类型不会拥有原基础类型所附带的方法
 
 ```golang
 //声明新类型，以int类型作为基础类型
@@ -831,9 +1030,21 @@ type (
 //所有的类型的值必须显式说明，显式转换
 //类型A的值=类型B(类型A的值)
 
+//值的类型转换:
+//定义新类型typeB
+type typeB int
+//创建名为valueOfTypeB的typeB类型的变量
+var valueOfTypeB typeB
+//显式转换valueOfTypeA的值给变量valuleOfTypeB
+valueOfTypeB = typeB(valueOfTypeA)
+
 ```
 
 ### 使用type作为类型别名
+
+- 为某数据类型起一个别名
+- 别名类型与原类型可被视作同一种类型
+- 别名类型拥有原类型附带的所有方法
 
 ## resoruces
 
