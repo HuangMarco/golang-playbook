@@ -666,9 +666,9 @@ func main(){
 }
 ```
 
-### golang 运算符
+## golang 运算符
 
-#### 算术运算符
+### 算术运算符
 
 ```txt
 +	相加	A + B 输出结果 30
@@ -680,7 +680,7 @@ func main(){
 --	自减	A-- 输出结果 9
 ```
 
-#### 关系运算符
+### 关系运算符
 
 ```txt
 ==	检查两个值是否相等，如果相等返回 True 否则返回 False。	(A == B) 为 False
@@ -691,7 +691,7 @@ func main(){
 <=	检查左边值是否小于等于右边值，如果是返回 True 否则返回 False。	(A <= B) 为 True 
 ```
 
-#### 逻辑运算符
+### 逻辑运算符
 
 ```txt
 &&	        逻辑 AND 运算符。 如果两边的操作数都是 True，则条件 True，否则为 False。 	        (A && B) 为 False
@@ -699,7 +699,7 @@ func main(){
 !	        逻辑 NOT 运算符。 如果条件为 True，则逻辑 NOT 条件 False，否则为 True。	            !(A && B) 为 True 
 ```
 
-#### 位运算符
+### 位运算符
 
 ```txt
 &	        按位与运算符"&"是双目运算符。 其功能是参与运算的两数各对应的二进位相与。 	                                        (A & B) 结果为 12, 二进制为 0000 1100
@@ -709,7 +709,7 @@ func main(){
 >>	        右移运算符">>"是双目运算符。右移n位就是除以2的n次方。 其功能是把">>"左边的运算数的各二进位全部右移若干位，">>"右边的数指定移动的位数。 	A >> 2 结果为 15 ，二进制为 0000 1111
 ```
 
-#### 赋值运算符
+### 赋值运算符
 
 ```txt
 
@@ -726,7 +726,7 @@ func main(){
 |=	                按位或后赋值	                                C |= 2 等于 C = C | 2
 ```
 
-#### 其他运算符
+### 其他运算符
 
 ```txt
 &	                返回变量存储地址	                &a; 将给出变量的实际地址。
@@ -763,6 +763,77 @@ func main(){
 }
 ```
 
+## golang-结构体
+
+http://c.biancheng.net/view/65.html
+
+### 结构体定义
+
+- golang中允许通过自定义方式，定义新的类型。，结构体就是这些类型中的一种，且是复合类型
+- 结构体是由0个或者多个任意类型的值聚合撑的实体，每个值都可以被称为结构体的成员
+- 结构体中的字段拥有自己的类型和值
+- 结构体中的字段名称必须唯一
+- 结构体中的字段可以是结构体，甚至是字段所在的结构体的类型
+- 结构体中的字段，如果是同一类型，，可以写在同一行
+- 声明结构体不会分配内存，只是一种内存布局的描述
+
+```golang
+//结构体的名称在包内不能重复
+type <structure-name> struct{
+    <field1> <field1-type>//fielda string
+    <field2> <field2-type>
+
+    R, G, B byte//同种类型声明在同一行
+}
+```
+
+### 结构体实例化
+
+
+
+## golang-type
+
+http://c.biancheng.net/view/25.html
+
+https://wizardforcel.gitbooks.io/go42/content/content/42_17_type.html
+
+- golang中牵涉到type的有2个地方：类型定义的时候使用到type关键字，类型别名的时候也使用到type关键字
+- 是golang1.9之后添加的功能
+
+```golang
+//golang1.9之前：
+type byte uint8
+type rune int32
+//golang1.9之后：
+type byte = uint8
+type rune = int32
+```
+
+### 使用type创建自定义类型
+
+- 既可以使用type关键字定义一个新的结构体
+- 也可以使用type关键字，以一个已存在的类型作为基础类型，定义新类型，被称为自定义类型
+
+```golang
+//声明新类型，以int类型作为基础类型
+type newinttype int
+//使用新类型newinttype来创建变量
+var newValue newinttype
+
+//定义多个自定义类型
+type (
+    firstOne int
+    secondOne float64
+    thirdOne string
+)
+
+//在golang中，每个值都必须在经过编译之后，属于某个类型，因为其是静态类型语言
+//所有的类型的值必须显式说明，显式转换
+//类型A的值=类型B(类型A的值)
+
+```
+
+### 使用type作为类型别名
 
 ## resoruces
 
