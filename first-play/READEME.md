@@ -1111,3 +1111,5 @@ https://studygolang.com/articles/5296
 https://haicoder.net/golang/golang-mutex.html
 
 https://www.digitalocean.com/community/tutorial_series/how-to-code-in-go
+
+https://assets.digitalocean.com/books/how-to-code-in-go.pdf
