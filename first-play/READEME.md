@@ -114,7 +114,7 @@ func main(){
 
 ```
 
-### golang method 声明- methods on values/pointers
+### Pointer/Value Receivers 声明- methods on values/pointers
 
 - 分为methods on values和methods on pointers: https://golang.org/doc/faq#methods_on_values_or_pointers
 - 考虑的重点是：你是否有需求去修改传人类型的本身
@@ -128,7 +128,6 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     //...
 }
 ```
-
 
 ```golang
 
@@ -169,14 +168,10 @@ func main() {
 ## golang引用类型-interface
 
 - golang中，interface类型和java中的接口功能类似，如果声明了interface类型，在interface类型中声明所有需要被实现的方法，带调用时，当某种类型的变量被指定为interface类型，那么该类型必须实现interface中声明的所有方法
-
+- 一旦将某个类型指定为interface类型，那么golang就会检查该类型所有的方法集合，查看是否实现interface里面的方法
 - golang interface声明
 
 ```golang
-type yourInterface interface{
-    //为该接口yourInterface声明方法String()
-    String() string
-}
 
 package main
 
@@ -184,6 +179,11 @@ import {
 
     "fmt"
     "strings"
+}
+
+type Stringer interface {
+    //为该接口Stringer声明方法String()
+    String() string
 }
 
 //声明一个结构类型，名为Ocean
@@ -215,6 +215,60 @@ log("The creatures in ocean:", ocean)
 //如果Ocean没有实现String()方法，就会报错
 // src/e4/main.go:24:6: cannot use o (type Ocean) as type fmt.Stringer in argument to log:
         // Ocean does not implement fmt.Stringer (missing String method)
+```
+
+- pointer receiver的methods set与value receiver的methods set是不同的，因为pointer receiver可以改动receiver，但是value receiver不能。只有pointer receiver才能满足interface的需要
+
+```golang
+package main
+
+import "fmt"
+
+type Submersible interface {
+    Dive()
+}
+
+type Shark struct {
+    Name string
+    isUnderwater bool
+}
+
+//定义了value receiver
+func (s Shark) String() string {
+    if s.isUnderwater {
+        return fmt.Springtf("%s is underwater", s.Name)
+    }
+    return fmt.Springtf("%s is on the Surface", s.Name)
+}
+
+//结构体Shark因为要调用接口Submersible中的方法Dive，所以必须实现方法Dive
+//同时是pointer reciever，所以改变了结构体自身
+func (s *Shark) Dive() {
+    s.isUnderwater = true
+}
+
+//方法submerge中，参数为接口类型，所以传入的参数必须实现接口Submersible中的所有方法
+func submerge(s Submersible) {
+    //接口类型又通过调用方法Dive，改变了receiver自身
+    s.Dive()
+}
+
+func main() {
+    //因为当前情况下，Shark类型实现的point receiver方式的接口Dive，所以在这里也必须传入一个指针类型变量
+    //如果传入的不是一个指针类型变量，就会报错
+    s := &Shark{
+        Name: "Marco",
+    }
+
+    fmt.Println(s)
+    submerge(s)
+    fmt.Println(s)
+}
+
+// Output
+// Marco is on the surface
+// Marco is underwater
+
 ```
 
 ### golang标识符
@@ -1055,3 +1109,5 @@ http://c.biancheng.net/view/23.html
 https://studygolang.com/articles/5296
 
 https://haicoder.net/golang/golang-mutex.html
+
+https://www.digitalocean.com/community/tutorial_series/how-to-code-in-go
