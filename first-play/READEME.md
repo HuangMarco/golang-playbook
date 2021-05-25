@@ -1013,6 +1013,27 @@ func main(){
 }
 ```
 
+```golang
+package main
+import (
+    "fmt"
+    "strings"
+    )
+
+func main(){
+
+    fmt.Println("Just input your name")
+    var name string
+    fmt.Scanln(&name)
+    //golang捕捉到了我们输入name之后，摁的ENTER，所以默认的output会有换行动作，为了消除换行，我们需要执行下面语句消除空白
+    //事实证明上面的注释所说是错误的，运行second-play/test.go，即可发现，golang 1.16.3中并没有出现换行的情况
+    name = strings.TrimSpace(name)
+    fmt.Printf("Hello!, %s I'm Golang!", name)
+
+}
+
+```
+
 ## golang-结构体
 
 http://c.biancheng.net/view/65.html
