@@ -304,7 +304,6 @@ https://haicoder.net/golang/golang-identifier.html
 
 ```go
 
-
 package main
 import "fmt"
 //错误写法，golang如果没有再main()后找到大括号，会自动加上一个大括号，所以会报错
@@ -1047,6 +1046,7 @@ http://c.biancheng.net/view/65.html
 - 结构体中的字段可以是结构体，甚至是字段所在的结构体的类型
 - 结构体中的字段，如果是同一类型，，可以写在同一行
 - 声明结构体不会分配内存，只是一种内存布局的描述
+- 结构体的默认值是nil,结构体没有真正的值
 
 ```golang
 //结构体的名称在包内不能重复
@@ -1057,10 +1057,6 @@ type <structure-name> struct{
     R, G, B byte//同种类型声明在同一行
 }
 ```
-
-### 结构体实例化
-
-
 
 ## golang-type
 
@@ -1121,6 +1117,36 @@ valueOfTypeB = typeB(valueOfTypeA)
 - 别名类型与原类型可被视作同一种类型
 - 别名类型拥有原类型附带的所有方法
 
+```golang
+package main
+
+import "fmt"
+
+type A struct{
+    Face int
+}
+
+//类型别名
+type anotherA = A
+
+//A的方法
+func (a A) speak() {
+    fmt.Println("A speak aaa", a.Face)
+}
+
+func main(){
+    var ainstance A = A{Face: 9}
+    ainstance.speak()
+
+    var anotherAinstance anotherA = anotherA{Face: 9}
+    anotherAinstance.speak()
+}
+
+//output
+// A speak aaa 9
+// A speak aaa 9
+```
+
 ## resoruces
 
 https://cloud.tencent.com/developer/article/1386519
@@ -1134,3 +1160,5 @@ https://haicoder.net/golang/golang-mutex.html
 https://www.digitalocean.com/community/tutorial_series/how-to-code-in-go
 
 https://assets.digitalocean.com/books/how-to-code-in-go.pdf
+
+https://wizardforcel.gitbooks.io/go42/content/content/42_17_type.html
