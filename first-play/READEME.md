@@ -1162,3 +1162,5 @@ https://www.digitalocean.com/community/tutorial_series/how-to-code-in-go
 https://assets.digitalocean.com/books/how-to-code-in-go.pdf
 
 https://wizardforcel.gitbooks.io/go42/content/content/42_17_type.html
+
+https://gobuffalo.io/en/docs/getting-started/installation
