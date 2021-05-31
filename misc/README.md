@@ -139,4 +139,7 @@ https://blog.kalan.dev/golang-default-value/
 ```sh
 # https://stackoverflow.com/questions/59976812/empty-interfaces-in-golang
 # https://medium.com/a-journey-with-go/go-understand-the-empty-interface-2d9fc1e5ec72
+
+# golang interfaces
+# https://research.swtch.com/interfaces
 ```
