@@ -143,3 +143,10 @@ https://blog.kalan.dev/golang-default-value/
 # golang interfaces
 # https://research.swtch.com/interfaces
 ```
+
+## post in golang
+
+```sh
+# https://blog.csdn.net/mofiu/article/details/79925994
+# https://stackoverflow.com/questions/24455147/how-do-i-send-a-json-string-in-a-post-request-in-go
+```
