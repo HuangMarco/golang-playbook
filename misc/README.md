@@ -66,6 +66,10 @@ go get -u github.com/spf13/cobra
 ## golang debugging in vscode
 
 ```sh
+
+# 包含远程调试
+# https://segmentfault.com/a/1190000018671207
+
 # https://github.com/golang/vscode-go/blob/master/docs/debugging.md
 # https://www.thegreatcodeadventure.com/debugging-a-go-web-app-with-vscode-and-delve/
 # https://www.digitalocean.com/community/tutorials/debugging-go-code-with-visual-studio-code
@@ -106,6 +110,13 @@ https://blog.kalan.dev/golang-default-value/
 ```sh
 # https://pkg.go.dev/github.com/onsi/ginkgo@v1.8.0
 
+```
+
+## built-in package
+
+```sh
+# https://golang.org/pkg/builtin/
+# such as responseBody := new(bytes.Buffer)
 ```
 
 ## map interface in golang
@@ -167,11 +178,12 @@ https://blog.kalan.dev/golang-default-value/
 
 # json marshal and unmarshal:
 # https://golang.org/pkg/encoding/json/
-
+# https://stackoverflow.com/questions/26390503/converting-structure-into-byte-data-and-vice-versa-in-golang
 
 
 # parse json full example
 # https://bencane.com/2020/12/08/maps-vs-structs-for-json/
+# Non-ASCII punctuation characters aren't supported in struct tags
 # https://www.alexedwards.net/blog/json-surprises-and-gotchas
 ```
 
@@ -266,4 +278,40 @@ https://blog.kalan.dev/golang-default-value/
 
 ```sh
 # https://yourbasic.org/golang/structs-explained/
+```
+
+## guidelines
+
+```sh
+# https://github.com/bahlo/go-styleguide
+
+# https://github.com/golang/go/wiki/Style
+
+# https://github.com/smallnest/go_best_practices
+
+# https://github.com/golang/go/wiki/CodeReviewComments
+
+# Today, we have released the first version of Chrono, which is a scheduler library that lets you run your tasks and code periodically in Golang.
+# https://github.com/procyon-projects/chrono
+
+# https://www.reddit.com/r/golang/comments/b044f6/is_there_any_official_styleguide_codingstandard/
+
+
+# immediate mode gui in golang
+# https://gioui.org/
+
+```
+
+## go linter
+
+```sh
+# https://zhuanlan.zhihu.com/p/143567949
+# https://github.com/golangci/golangci-lint
+# https://golangci-lint.run/
+```
+
+## go build
+
+```golang
+go build -o <output> main.go
 ```

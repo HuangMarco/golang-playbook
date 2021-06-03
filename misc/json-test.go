@@ -1,10 +1,11 @@
 package main
 
 import (
-	"fmt"
-	"os"
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"os"
 )
 
 type Users struct {
@@ -60,6 +61,9 @@ func main(){
     json.Unmarshal([]byte(byteValue), &result)
 
     fmt.Println(result["users"])
+
+	responseBody := new(bytes.Buffer)
+	fmt.Print(responseBody)
 	
 
 

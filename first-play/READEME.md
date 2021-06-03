@@ -869,7 +869,7 @@ ChannelType = ( "chan" | "chan" "<-" | "<-" "chan" ) ElementType .
 
 ```
 
-## golang结构类型
+### golang结构类型
 
 ## golang 注释
 
