@@ -57,8 +57,9 @@ go get -u github.com/spf13/cobra
 ## Json Marshal in golang
 
 ```sh
-https://pkg.go.dev/encoding/json#Marshal
-
+# https://pkg.go.dev/encoding/json#Marshal
+# parse json array into struct
+# https://www.sohamkamani.com/golang/parsing-json/
 
 ```
 
@@ -149,4 +150,120 @@ https://blog.kalan.dev/golang-default-value/
 ```sh
 # https://blog.csdn.net/mofiu/article/details/79925994
 # https://stackoverflow.com/questions/24455147/how-do-i-send-a-json-string-in-a-post-request-in-go
+```
+
+## json check in golang
+
+```sh
+# https://blog.golang.org/json
+# https://medium.com/@arpitkh96/differentiate-between-empty-and-not-set-fields-with-json-in-golang-957bb2c5c065
+# https://www.golangprograms.com/how-to-check-if-a-map-contains-a-key-in-go.html
+# https://stackoverflow.com/questions/31504975/validate-struct-field-if-it-exists
+
+# https://stackoverflow.com/questions/64716794/check-if-json-has-fields-other-than-valid-keys-in-struct
+
+# 小技巧
+# https://colobu.com/2017/06/21/json-tricks-in-Go/
+
+# json marshal and unmarshal:
+# https://golang.org/pkg/encoding/json/
+
+
+
+# parse json full example
+# https://bencane.com/2020/12/08/maps-vs-structs-for-json/
+# https://www.alexedwards.net/blog/json-surprises-and-gotchas
+```
+
+## string literal in golang
+
+```sh
+# https://golang.org/ref/spec#String_literals
+# https://studygolang.com/articles/7312
+```
+
+## struct tags in golang
+
+```sh
+# for struct tags `json:"xxx"` also for empty interface
+# https://golang.org/ref/spec#Struct_types
+```
+
+## debug lauch.json
+
+```json
+
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Package",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}",
+            "env": {},
+            "args": [
+                "first command",
+                "second command",
+                "third command",
+                "-f",
+                "/Users/xx/work_dir/work/asdfasdf/test.json"
+            ],
+            "dlvLoadConfig": {
+                "followPointers": true,
+                "maxVariableRecurse": 1,
+                "maxStringLen": 400,
+                "maxArrayValues": 64,
+                "maxStructFields": -1
+            }
+        }
+    ]
+}
+```
+
+```json
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Package",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}",
+            "env": {},
+            "args": [
+                "first command",
+                "second command",
+                "third command",
+                "--flag1",
+                "flag1-value",
+                "--flag2",
+                "flag2-value"
+                // "-f",
+                // "/Users/xx/work_dir/xxx/xx/test.json"
+            ],
+            "dlvLoadConfig": {
+                "followPointers": true,
+                "maxVariableRecurse": 1,
+                "maxStringLen": 400,
+                "maxArrayValues": 64,
+                "maxStructFields": -1
+            }
+        }
+    ]
+}
+```
+
+## instance struct
+
+```sh
+# https://yourbasic.org/golang/structs-explained/
 ```
