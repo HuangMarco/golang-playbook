@@ -871,6 +871,10 @@ ChannelType = ( "chan" | "chan" "<-" | "<-" "chan" ) ElementType .
 
 ### golang结构类型
 
+```golang
+
+```
+
 ## golang 注释
 
 - 合理注释代码应当占总代码量的1/3
