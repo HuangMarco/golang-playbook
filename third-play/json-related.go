@@ -107,6 +107,8 @@ func main() {
 	for _, item := range users.Users {
 		fmt.Printf("Print users: %v\n", item.Name)
 	}
+
+	fmt.Println()
 	
 
 }

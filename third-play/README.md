@@ -23,16 +23,21 @@ export GO111MODULE="auto"
 ```golang
 // https://pkg.go.dev/github.com/valyala/fastjson#Validate
 // https://github.com/asaskevich/govalidator
+//更多详情见同目录：json-related.go
+
+//注意事项：
+//Struct element首字母必须为大写，如此json Encoder/Decoder才能使用这些element.
+//json Encoder/Decoder不会使用没有Export过的struct element
 ```
 
-## deep source analysis
+## deep source analysis - git hub深度代码分析与错误检查
 
 ```sh
 # 自动帮助分析检查代码-通常与git hub repo集成使用
 # https://deepsource.io/
 ```
 
-## debug file
+## debug file - 调试代码
 
 ```json
 {
@@ -91,4 +96,32 @@ or
 注意：`${file}`即是你当前vscode中打开的文件，也就是说要debug哪个文件，就保持该文件在vscode当前窗口被打开即可
 
 https://code.visualstudio.com/docs/editor/variables-reference
+
+## interface {}的用法
+
+- 假设你需要根据用户输入打印一段信息，但是用户输入的类型你不知晓，不知道是int还是string，此时可以使用interface{}，interface{}可以代表任何
+- func fmt.Println(a ...interface{}) (n int, err error)
+- 假设你提前知晓过来的data的element都是string类型，但是element对应的value类型未知，此时可以使用`map[string]interface{}`
+
+```json
+{
+   "name":"John",
+   "age":29,
+   "hobbies":[
+      "martial arts",
+      "breakfast foods",
+      "piano"
+   ]
+}
+```
+
+此时可以使用:
+
+```golang
+type Person struct {
+    Name string `json:"name"`
+    Age string `json:"age"`
+    Hobbies []string `json:"hobbies"`
+}
+```
 
