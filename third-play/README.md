@@ -16,6 +16,9 @@ export GO111MODULE=off
 go env -w GO111MODULE=auto
 # do below to execute from package for latest go version
 export GO111MODULE="auto"
+
+# show all golang environment variables
+go env
 ```
 
 ## validate json
@@ -125,3 +128,47 @@ type Person struct {
 }
 ```
 
+## Positional Arguments
+
+```txt
+所谓positional argument位置参数，是指用相对位置指代参数。关键字参数（keyword argument），见名知意使用关键字指代参数。位置参数或者按顺序传递参数，或者使用名字，自然使用名字时，对顺序没有要求。
+
+A positional argument is a name that is not followed by an equal assign（=） and default value.
+
+A keyword argument is followed by an equal sign and an expression that gives its default value.
+
+所以positional arguments有点类似于类型推导
+
+```
+
+### cobra positional arguments
+
+```sh
+# https://pkg.go.dev/github.com/spf13/cobra#readme-positional-and-custom-arguments
+# https://www.usenix.org/system/files/login/articles/login_summer18_09_mceniry.pdf
+# Best tutorial for cobra I believe
+# https://www.bookstack.cn/read/cobra/spilt.4.spilt.4.README.md
+```
+
+### git
+
+```sh
+# compare file in two branches differences
+git diff mybranch..master -- <your-file-path>
+# compare the local file difference with remote master branch
+git diff master -- <your-file-path>
+```
+
+## 操作文件
+
+```golang
+// https://github.com/spf13/afero
+// use golang module "path/filepath"
+// use golang module "github.com/spf13/afero"
+```
+
+## golang testing
+
+```sh
+# https://golang.org/pkg/testing/
+```
