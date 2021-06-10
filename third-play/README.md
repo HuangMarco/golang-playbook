@@ -171,6 +171,12 @@ git diff master -- <your-file-path>
 
 ```sh
 # https://golang.org/pkg/testing/
+# https://books.studygolang.com/The-Golang-Standard-Library-by-Example/chapter09/09.1.html
+# Ginkgo is a BDD-style testing framework for Golang
+# https://pkg.go.dev/github.com/onsi/ginkgo#pkg-overview
+# https://onsi.github.io/ginkgo/
+
+# https://medium.com/boldly-going/unit-testing-in-go-with-ginkgo-part-1-ce6ff06eb17f
 ```
 
 ## Kubernetes
@@ -179,4 +185,123 @@ git diff master -- <your-file-path>
 
 ```sh
 # https://kubernetes.io/zh/docs/tasks/access-application-cluster/port-forward-access-application-cluster/
+```
+
+## print logs
+
+```sh
+# github.com/sirupsen/logrus
+```
+
+
+```
+package command_test
+
+import (
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+	"github.com/onsi/gomega/ghttp"
+
+	"github.wdf.sap.corp/hcpperf/dynatrace-go/afsutil"
+	. "github.wdf.sap.corp/hcpperf/dynatrace-go/command"
+	"github.wdf.sap.corp/hcpperf/dynatrace-go/dynatrace/environment"
+)
+
+var _ = Describe("EnvironmentGetObjectSettings", func() {
+	var server *ghttp.Server
+
+	BeforeEach(func() {
+		server = ghttp.NewServer()
+		afsutil.UseVirtualFs()
+		_ = environment.AddTarget("default", server.URL()+"/e/12345678-1234-1234-1234-123456789012", "123456789012345678901", false)
+		_ = environment.SetActiveTarget("default")
+	})
+
+	AfterEach(func() {
+		server.Close()
+		_ = environment.RemoveTarget("default")
+	})
+
+	Context("when no arguments are provided", func() {
+		It("should return an error", func() {
+			err, uiOut, cobraOut := execCmd(CmdEnvGetObjectSettings(), []string{})
+
+			Expect(err).To(HaveOccurred())
+			Expect(uiOut).To(BeEmpty())
+			Expect(cobraOut).ToNot(BeEmpty())
+			Expect(cobraOut).To(HavePrefix("Error: accepts 2 arg(s), received 0"))
+		})
+	})
+
+	Context("when there is no object settings configuration", func() {
+		It("should return response with empty items and totalCount as 0 and pageSize as 100", func() {
+			server.AppendHandlers(
+				ghttp.CombineHandlers(
+					ghttp.VerifyRequest("GET", "/e/12345678-1234-1234-1234-123456789012/api/v2/settings/objects"),
+					ghttp.RespondWith(200, []byte(`
+{"items": [],"totalCount": 0, "pageSize": 100}`)),
+				),
+			)
+			_, uiOut, cobraOut := execCmd(CmdEnvGetObjectSettings(), []string{"environment", "builtin:container.monitoring-rule"})
+			Expect(uiOut).To(Equal(`[map[items:[] pageSize:100 totalCount:0]]`))
+			Expect(cobraOut).To(BeEmpty())
+		})
+	})
+
+})
+
+```
+
+## map[string]interface 
+
+```sh
+# https://bitfieldconsulting.com/golang/map-string-interface
+```
+
+## check is file or directory
+
+```golang
+package main
+
+import (
+    "fmt"
+    "os"
+)
+
+func main() {
+    name := "FileOrDir"
+    fi, err := os.Stat(name)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+    switch mode := fi.Mode(); {
+    case mode.IsDir():
+        // do directory stuff
+        fmt.Println("directory")
+    case mode.IsRegular():
+        // do file stuff
+        fmt.Println("file")
+    }
+}
+```
+
+## array vs slice
+
+```sh
+# https://www.godesignpatterns.com/2014/05/arrays-vs-slices.html
+# https://books.studygolang.com/The-Golang-Standard-Library-by-Example/chapter02/02.2.html
+```
+
+## []byte convert to string
+
+```sh
+# https://segmentfault.com/a/1190000037679588
+# https://www.dotnetperls.com/json-go
+```
+
+## github review
+
+```sh
+# https://www.freecodecamp.org/news/what-do-cryptic-github-comments-mean-9c1912bcc0a4/
 ```
