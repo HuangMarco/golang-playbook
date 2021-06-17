@@ -109,6 +109,38 @@ func main() {
 	}
 
 	fmt.Println()
-	
+
+}
+
+type Company struct {
+	Name string `json:"name"`
+	Year int    `json:"year"`
+}
+
+type Car2 struct {
+	Band    string `json:"band"`
+	Company Company
+	Color   string `json:"color"`
+	Like    bool   `json:"like"`
+}
+
+func dealWithMapString() {
+
+	//格式化输出json - especially for map[string]interface{}
+	cars := map[string]interface{}{
+		"band": "tanke",
+		"company": struct {
+			name string
+			year float64
+		}{"tanke-company", 2021},
+		"color": "black",
+		"like":  true,
+	}
+
+	dataByte, error := json.Marshal(cars)
+
+	// error := json.Unmarshal(cars, )
+
+	fileName := "map-string-interface-cars.json"
 
 }

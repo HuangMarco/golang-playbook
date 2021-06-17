@@ -1,0 +1,9 @@
+{
+    "band": "tanke",
+    "company": {
+        "name" : "tanke-company",
+        "year": 2021
+    },
+    "color": "black",
+    "like": true
+}

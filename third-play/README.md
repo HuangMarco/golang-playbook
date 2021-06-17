@@ -305,3 +305,11 @@ func main() {
 ```sh
 # https://www.freecodecamp.org/news/what-do-cryptic-github-comments-mean-9c1912bcc0a4/
 ```
+
+## goroutines
+
+https://www.golangprograms.com/how-to-use-waitgroup-to-delay-execution-of-the-main-function-until-after-all-goroutines-are-complete.html
+
+## http client
+
+http://dlintw.github.io/gobyexample/public/http-client.html
