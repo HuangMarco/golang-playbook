@@ -110,11 +110,14 @@ func main() {
 
 	fmt.Println()
 
+	fmt.Println("Start to deal with map string interface...")
+	
+	dealWithMapString()
 }
 
 type Company struct {
 	Name string `json:"name"`
-	Year int    `json:"year"`
+	Year float64   `json:"year"`
 }
 
 type Car2 struct {
@@ -126,21 +129,58 @@ type Car2 struct {
 
 func dealWithMapString() {
 
-	//格式化输出json - especially for map[string]interface{}
 	cars := map[string]interface{}{
 		"band": "tanke",
 		"company": struct {
-			name string
-			year float64
+			Name string
+			Year float64
 		}{"tanke-company", 2021},
 		"color": "black",
 		"like":  true,
 	}
 
+	//格式化输出json - especially for map[string]interface{}
 	dataByte, error := json.Marshal(cars)
+	if error != nil {
+		// erros.new("error happened")
+		fmt.Println("error happended during the marshalling")
+	}
 
-	// error := json.Unmarshal(cars, )
+	var carsMapStringInterface map[string]interface{}
 
-	fileName := "map-string-interface-cars.json"
+	error = json.Unmarshal(dataByte, &carsMapStringInterface)
 
+	for k,v := range carsMapStringInterface {
+		switch c := v.(type) {
+		case string:
+		  fmt.Printf("Item %q is a string, containing %q\n", k, c)
+		case float64:
+		  fmt.Printf("It looks like item %q is a number, specifically %f\n", k, c)
+		default:
+		  fmt.Printf("Don't know what type item %q is, but I think it might be %T\n", k, c)
+		}
+	}
+
+	//Another way to print the json of the map[string]interface{}
+	output, error2 := json.Marshal(carsMapStringInterface)
+	if error2 != nil {
+		fmt.Println("Error happened during the marshalling")
+	}
+
+	fmt.Println(string(output))
+	fmt.Println("printing json format completed.")
+
+	//Directly loop the cars as the map[string]interface{}
+	for k,v := range cars {
+		fmt.Println(k,v)
+	}
+
+	var car2 Car2
+
+	unmarshalError := json.Unmarshal(dataByte, &car2)
+	if unmarshalError != nil {
+		fmt.Println(unmarshalError)
+	}
+
+	fmt.Printf("The company name: %s", car2.Company.Name)
 }
