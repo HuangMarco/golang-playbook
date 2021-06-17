@@ -33,6 +33,79 @@ go env
 //json Encoder/Decoder不会使用没有Export过的struct element
 ```
 
+## format golang
+
+```sh
+go fmt <your-golang-program>
+```
+
+## map[string]interface {}
+
+部分转载于：https://bitfieldconsulting.com/golang
+
+- [map string interface类型](https://bitfieldconsulting.com/golang/map-string-interface)是一个非常有用的类型，更多用法参照同目录`json-related.go`
+- golang中，通过hash table方式来实现Maps,参照[Go maps in action](https://blog.golang.org/maps)
+- 通过`m = make(map[string]int)`方式来初始化一个Map type。通过`var m map[string]int`方式声明的m初始化的值是nil，这种方式只是声明一个并没有任何赋值，尝试向一个nil的map塞值会导致报错,make命令会初始化一个hash map数据结构，同时分配内存，然后返回一个空的map(只是空而不是nil)。该过程是在runtime中完成的，而不是golang语言本身完成的
+- 注意：在golang中，golang语言不会通过interface{}来实现map，主要是：在编译期间对map声明以及赋值语句进行rewriting，rewriting之后的代码调用的是golang runtime代码，如下，同时注意每当有一个新的map声明，就会复制一份golang runtime的mapaccess(m,k,v)代码，再有新的map声明，就会又复制一份
+
+```golang
+v := m["key"]     → runtime.mapaccess1(m, ”key", &v)
+v, ok := m["key"] → runtime.mapaccess2(m, ”key”, &v, &ok)
+m["key"] = 9001   → runtime.mapinsert(m, ”key", 9001)
+delete(m, "key")  → runtime.mapdelete(m, “key”)
+```
+
+```golang
+func mapaccess1(t *maptype, h *hmap, key unsafe.Pointer) unsafe.Pointer
+//key - 指向key的pointer
+//h - 指向runtime.hmap结构，该结构存放bucket和其他的自身的参数
+// t - 指向用户的maptype
+
+type maptype struct {
+       typ           _type
+       key         *_type
+       elem        *_type
+        bucket        *_type // internal type representing a hash bucket 
+        hmap          *_type // internal type representing a hmap
+        keysize       uint8  // size of key slot
+        indirectkey   bool   // store ptr to key instead of key itself
+       valuesize     uint8  // size of value slot
+      indirectvalue bool   // store ptr to value instead of value itself
+       bucketsize    uint16 // size of bucket
+       reflexivekey  bool   // true if k==k for all keys
+      needkeyupdate bool   // true if we need to update key on overwrite 
+}
+```
+- golang中,map并不是线程安全的，如果从不同的goroutines访问map，可能会导致有多个data race产生，并导致crash，使用[race detector](https://blog.golang.org/race-detector)来避免此类问题
+- 在并发环境中，通过使用mutex比如`sync.Map`来避免多个进程同时访问map的时候出现问题。但是最好的解决办法是，在代码中避免concurrent access到同一个map。经典名言"Don't communicate by sharing memory, share memory by communicating",[vedio](https://www.youtube.com/watch?v=PAAkCSZUG1c&t=2m48s)
+- 当你把map当成存放数据的box的时候,map就不是pointer，当你在map中存放指向到其他类型的时候，map就是pointer
+- 复制map[string]interface{}只能通过for循环的方式，获取其中的每个key,value。或者通过转换为[]byte，再unmarshal的方式来获取值
+- map[string]interface转换为yaml:
+
+```golang
+import "gopkg.in/yaml.v2"
+...
+m := map[string]bool{
+  "Go is awesome":             true,
+  "I drink and I know things": true,
+  "PI IS EXACTLY THREE!":      false,
+}
+data, err := yaml.Marshal(m)
+if err != nil {
+  log.Fatal(err)
+}
+fmt.Printf("%s\n", data)
+// Go is awesome: true
+// I drink and I know things: true
+// PI IS EXACTLY THREE!: false
+```
+
+
+
+## race detector
+
+https://blog.golang.org/race-detector
+
 ## deep source analysis - git hub深度代码分析与错误检查
 
 ```sh

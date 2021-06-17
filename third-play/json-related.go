@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/valyala/fastjson"
@@ -113,6 +114,8 @@ func main() {
 	fmt.Println("Start to deal with map string interface...")
 	
 	dealWithMapString()
+
+	encodeAndDecode()
 }
 
 type Company struct {
@@ -182,5 +185,36 @@ func dealWithMapString() {
 		fmt.Println(unmarshalError)
 	}
 
-	fmt.Printf("The company name: %s", car2.Company.Name)
+	fmt.Printf("The company name: %s\n", car2.Company.Name)
+	fmt.Printf("The length of the map[string]interface: %d, so that it is not empty", len(carsMapStringInterface))
+	fmt.Println("Clear the Car2 map")
+
+	car2 = Car2{}
+
+	fmt.Println("Clear the map string interface")
+
+
+}
+
+type Junk struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+	Area string `json:"area"`
+	// Password bool `json:"password,omitempty"` //临时忽略password字段
+}
+
+func encodeAndDecode(){
+	a := Junk{}
+	data := `{"id":1,"name":"gg"}}`
+
+	d := json.NewDecoder(strings.NewReader(data))
+	d.DisallowUnknownFields()
+
+	if err := d.Decode(&a); err != nil {
+		fmt.Println(err)
+	}
+	if d.More() {
+		fmt.Println("extra junk")
+	}
+	fmt.Println(a)
 }
