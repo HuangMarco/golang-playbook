@@ -65,7 +65,7 @@ type maptype struct {
        typ           _type
        key         *_type
        elem        *_type
-        bucket        *_type // internal type representing a hash bucket 
+        bucket        *_type // internal type representing a hash bucket
         hmap          *_type // internal type representing a hmap
         keysize       uint8  // size of key slot
         indirectkey   bool   // store ptr to key instead of key itself
@@ -73,7 +73,7 @@ type maptype struct {
       indirectvalue bool   // store ptr to value instead of value itself
        bucketsize    uint16 // size of bucket
        reflexivekey  bool   // true if k==k for all keys
-      needkeyupdate bool   // true if we need to update key on overwrite 
+      needkeyupdate bool   // true if we need to update key on overwrite
 }
 ```
 - golang中,map并不是线程安全的，如果从不同的goroutines访问map，可能会导致有多个data race产生，并导致crash，使用[race detector](https://blog.golang.org/race-detector)来避免此类问题
@@ -386,3 +386,27 @@ https://www.golangprograms.com/how-to-use-waitgroup-to-delay-execution-of-the-ma
 ## http client
 
 http://dlintw.github.io/gobyexample/public/http-client.html
+
+## golang interface
+
+https://draveness.me/golang/docs/part2-foundation/ch04-basic/golang-interface/
+
+## golang new and make
+
+https://draveness.me/golang/docs/part2-foundation/ch05-keyword/golang-make-and-new/
+
+## golang 语法糖 ...
+
+https://juejin.cn/post/6844903873409204232
+
+## golang import和package的使用
+
+https://segmentfault.com/a/1190000018235929
+
+## golang redefine-err-in-multiple-return-statement
+
+https://stackoverflow.com/questions/34266337/why-it-is-possible-to-redefine-err-in-multiple-return-statement-in-go
+
+## fake unit tests
+
+https://github.com/maxbrunsfeld/counterfeiter#installing-counterfeiter-to-gopathbin
