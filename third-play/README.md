@@ -19,6 +19,15 @@ export GO111MODULE="auto"
 
 # show all golang environment variables
 go env
+
+# invalid: disallowed version string
+# https://blog.csdn.net/weixin_41100576/article/details/109779837
+export GOPRIVATE=*.wdf.sap.corp
+OR 
+go env -w GOPRIVATE='*.wdf.sap.corp'
+# the default GOPRIVATE=""
+# the default GOSUMDB="sum.golang.org"
+
 ```
 
 ## validate json

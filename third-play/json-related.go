@@ -242,15 +242,22 @@ type testobjectSettingsValue struct {
 
 func anotherDecode() error {
 	var testobjSettingsResp testobjectSettingsResponse
+	var testobjSettingsResp2 testobjectSettingsResponse
 
 	// var values    = `{"enabled": true,"mode": "MONITORING_OFF","property": "KUBERNETES_NAMESPACE","operator": "EQUALS","value": "kube-system"}`
 
 	var wholeItems = `{"items":[{"objectId":"vu9U3hXa3q0AAAABACFidWlsdGluOmNvbnRhaW5lci5tb25pdG9yaW5nLXJ1bGUABnRlbmFudAAGdGVuYW50ACRlYjg3MTIzZC1lM2NhLTM2ZTMtYjY1NS04MWQ0ZGY4NmNkYTO-71TeFdrerQ","value":{"enabl":true,"modex":"MONITORING_OFF","property":"KUBERNETES_NAMESPACE","operator":"EQUALS","value":"kube-system"}},{"objectId":"vu9U3hXa3q0AAAABACFidWlsdGluOmNvbnRhaW5lci5tb25pdG9yaW5nLXJ1bGUABnRlbmFudAAGdGVuYW50ACRlYjg3MTIzZC1lM2NhLTM2ZTMtYj1Y1NS04MWQ0ZGY4NmNkYTO-71TeFdrerQ","value":{"enabl":true,"modex":"MONITORING_OFF","property":"KUBERNETES_NAMESPACE","operator":"EQUALS","value":"kube-system"}}],"totalCount":4,"pageSize":100}`
 
+	var wholeItemsByte = []byte(`{"items":[{"objectId":"vu9U3hXa3q0AAAABACFidWlsdGluOmNvbnRhaW5lci5tb25pdG9yaW5nLXJ1bGUABnRlbmFudAAGdGVuYW50ACRlYjg3MTIzZC1lM2NhLTM2ZTMtYjY1NS04MWQ0ZGY4NmNkYTO-71TeFdrerQ","value":{"enabl":true,"modex":"MONITORING_OFF","property":"KUBERNETES_NAMESPACE","operator":"EQUALS","value":"kube-system"}},{"objectId":"vu9U3hXa3q0AAAABACFidWlsdGluOmNvbnRhaW5lci5tb25pdG9yaW5nLXJ1bGUABnRlbmFudAAGdGVuYW50ACRlYjg3MTIzZC1lM2NhLTM2ZTMtYj1Y1NS04MWQ0ZGY4NmNkYTO-71TeFdrerQ","value":{"enabl":true,"modex":"MONITORING_OFF","property":"KUBERNETES_NAMESPACE","operator":"EQUALS","value":"kube-system"}}],"totalCount":4,"pageSize":100}`)
 	// decodeErr := json.NewDecoder(strings.NewReader(values)).Decode(&objSettingsResp)
 	decodeErr := json.NewDecoder(strings.NewReader(wholeItems)).Decode(&testobjSettingsResp)
 	if decodeErr != nil {
 		return decodeErr
+	}
+
+	anotherDecodeErr := json.NewDecoder(strings.NewReader(string(wholeItemsByte))).Decode(&testobjSettingsResp2)
+	if anotherDecodeErr != nil {
+		return anotherDecodeErr
 	}
 
 	for _, v := range testobjSettingsResp.Items {
