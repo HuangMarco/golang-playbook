@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+	"reflect"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/valyala/fastjson"
@@ -195,6 +196,8 @@ func dealWithMapString() {
 
 	anotherDecode()
 
+	compareTwoJson()
+
 
 }
 
@@ -273,4 +276,29 @@ func anotherDecode() error {
 
 }
 
+func compareTwoJson(){
+
+	s1 := `{"dog": 5, "cat": 3}`
+	s2 := `{"cat":3, "dog": 5}`
+
+	var o1 interface{}
+	var o2 interface{}
+
+	var err error
+	err = json.Unmarshal([]byte(s1), &o1)
+	if err != nil {
+		fmt.Printf("Error mashalling string 1 :: %s", err.Error())
+	}
+	err = json.Unmarshal([]byte(s2), &o2)
+	if err != nil {
+		fmt.Printf("Error mashalling string 2 :: %s", err.Error())
+	}
+
+	isEqualOrNot := reflect.DeepEqual(o1, o2)
+
+	fmt.Printf("The two string is equal or not: %t", isEqualOrNot)
+
+
+
+}
 
