@@ -198,6 +198,7 @@ func dealWithMapString() {
 
 	compareTwoJson()
 
+	createInitializeStruct()
 
 }
 
@@ -243,6 +244,69 @@ type testobjectSettingsValue struct {
 	Value    string `json:"value"`
 }
 
+func createInitializeStruct (){
+	// first way to create&initialize the struct
+	var wayOne testobjectSettingsValue
+	wayOne.Enabl = true
+	wayOne.Modex = "test"
+	wayOne.Property = "test-space"
+	wayOne.Operator = "operator1"
+	wayOne.Value = "test"
+
+	//struct to string via json
+	// fmt.Println(wayOne.(string))
+	wayOneJson, error := json.Marshal(wayOne)
+	if error != nil {
+		fmt.Println(error)
+	}
+
+	fmt.Println(string(wayOneJson))
+
+	// second way to create&initialize the struct
+	var secondOne *testobjectSettingsValue
+	secondOne = new(testobjectSettingsValue)
+	secondOne.Enabl = true
+	secondOne.Modex = "test"
+	secondOne.Property = "test-space"
+	secondOne.Operator = "operator1"
+	secondOne.Value = "test"
+	secondOneOutput, error := json.Marshal(secondOne)
+	if error != nil {
+		fmt.Println(error)
+	}
+
+	fmt.Println(string(secondOneOutput))
+
+	//Fourth way to create&initialize the struct
+
+	thirdOne := &testobjectSettingsValue{
+		Enabl : true,
+		Property: "test-space",
+		Operator: "operator1",
+		Value: "test",
+		Modex: "test",
+	}
+	fourthOne := &testobjectSettingsValue{
+		Enabl : true,
+		Property: "test-space",
+		Operator: "operator1",
+		Value: "test",
+		Modex: "test",
+	}
+	fourthOneOutput, error := json.Marshal(fourthOne)
+	if error != nil {
+		fmt.Println(error)
+	}
+
+	fmt.Println(string(fourthOneOutput))
+	fmt.Println(secondOne == fourthOne)
+	fmt.Println(thirdOne == fourthOne)
+
+
+
+
+}
+
 func anotherDecode() error {
 	var testobjSettingsResp testobjectSettingsResponse
 	var testobjSettingsResp2 testobjectSettingsResponse
@@ -281,6 +345,9 @@ func compareTwoJson(){
 	s1 := `{"dog": 5, "cat": 3}`
 	s2 := `{"cat":3, "dog": 5}`
 
+	s3 := `{"enabled": true,"mode": "INVALID-MODE","property": "KUBERNETES_NAMESPACE","operator": "EQUALS","value": "kube-system"}`
+	s4 := `{"mode": "INVALID-MODE",  "enabled": true,"operator": "EQUALS","property": "KUBERNETES_NAMESPACE","value": "kube-system"}`
+
 	var o1 interface{}
 	var o2 interface{}
 
@@ -296,7 +363,21 @@ func compareTwoJson(){
 
 	isEqualOrNot := reflect.DeepEqual(o1, o2)
 
-	fmt.Printf("The two string is equal or not: %t", isEqualOrNot)
+	fmt.Printf("The two string is equal or not: %t\n", isEqualOrNot)
+
+	err = json.Unmarshal([]byte(s3), &o1)
+	if err != nil {
+		fmt.Printf("Error mashalling string 1 :: %s", err.Error())
+	}
+	err = json.Unmarshal([]byte(s4), &o2)
+	if err != nil {
+		fmt.Printf("Error mashalling string 2 :: %s", err.Error())
+	}
+
+
+	isEqualOrNot = reflect.DeepEqual(o1, o2)
+
+	fmt.Printf("The another two string is equal or not: %t\n", isEqualOrNot)
 
 
 
