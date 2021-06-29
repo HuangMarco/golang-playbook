@@ -30,6 +30,10 @@ go env -w GOPRIVATE='*.wdf.sap.corp'
 
 ```
 
+## go vendor
+
+https://www.ardanlabs.com/blog/2020/04/modules-06-vendoring.html
+
 ## validate json
 
 ```golang
