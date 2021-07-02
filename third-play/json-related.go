@@ -200,6 +200,7 @@ func dealWithMapString() {
 
 	createInitializeStruct()
 
+	checkBoolean()
 }
 
 type Junk struct {
@@ -383,3 +384,22 @@ func compareTwoJson(){
 
 }
 
+type boolTest struct {
+	BoolAttribute bool `json:"flagBool"`
+}
+func checkBoolean(){
+	// testStr := `{"flagBool":"zxfafasdf"}`
+	testStr := `{"flagBool":true}`
+	
+	boolObj := new(boolTest)
+
+	err := json.Unmarshal([]byte(testStr), &boolObj)
+	if err != nil {
+		fmt.Println("have error for unmarshalling boolean value")
+	}
+	if boolObj.BoolAttribute {
+		fmt.Println("it is a boolean value")
+	}
+	
+
+}

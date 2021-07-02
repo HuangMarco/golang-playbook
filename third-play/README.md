@@ -27,7 +27,8 @@ OR
 go env -w GOPRIVATE='*.wdf.sap.corp'
 # the default GOPRIVATE=""
 # the default GOSUMDB="sum.golang.org"
-
+#GOPRIVATE=""
+#GOPROXY="https://proxy.golang.org,direct"
 ```
 
 ## go vendor
