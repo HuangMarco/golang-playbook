@@ -117,6 +117,8 @@ func main() {
 	dealWithMapString()
 
 	encodeAndDecode()
+
+	testCheckBooleanPointer()
 }
 
 type Company struct {
@@ -201,6 +203,8 @@ func dealWithMapString() {
 	createInitializeStruct()
 
 	checkBoolean()
+
+	testCheckBooleanPointer()
 }
 
 type Junk struct {
@@ -400,6 +404,53 @@ func checkBoolean(){
 	if boolObj.BoolAttribute {
 		fmt.Println("it is a boolean value")
 	}
+	
+
+}
+
+type booleanPointer struct {
+	BooleanAttribute *bool `json:"flagBool"`
+}
+
+func testCheckBooleanPointer(){
+	// boolObj := new(booleanPointer)
+	testBool := true
+
+	checkBooleanPointer(&testBool)
+}
+
+func checkBooleanPointer(testBol *bool){
+	// testStr := `{"flagBool":"zxfafasdf"}`
+	testStr := `{"flagBool":false}`
+	
+	boolObj := new(booleanPointer)
+
+	err := json.Unmarshal([]byte(testStr), &boolObj)
+	if err != nil {
+		fmt.Println("have error for unmarshalling boolean value")
+	}
+	if boolObj == nil {
+		fmt.Println("user doesn't set the boolean value")
+	}
+
+	if (*boolObj.BooleanAttribute){
+		fmt.Printf("user set the boolean value %t", *boolObj.BooleanAttribute)
+	}
+
+	if !(*boolObj.BooleanAttribute){
+		fmt.Printf("user set the boolean value %t", *boolObj.BooleanAttribute)
+	}
+	// if testBol == nil {
+	// 	fmt.Println("user doesn't set the boolean value")
+	// }
+
+	// if (*testBol){
+	// 	fmt.Printf("user set the boolean value %t",*testBol)
+	// }
+
+	// if !(*testBol){
+	// 	fmt.Printf("user set the boolean value %t",*testBol)
+	// }
 	
 
 }

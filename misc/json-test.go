@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strconv"
 )
 
 type Users struct {
@@ -22,6 +23,13 @@ type User struct {
 type Social struct {
     Facebook string `json:"facebook"`
     Twitter  string `json:"twitter"`
+}
+
+type TestBool struct {
+	KSettings KSettings `json:"k8s"`
+}
+type KSettings struct {
+	Untouch string `json:"untouch"`
 }
 
 
@@ -64,6 +72,30 @@ func main(){
 
 	responseBody := new(bytes.Buffer)
 	fmt.Print(responseBody)
+
+	testStr := `{}`
+
+	boolObj := new(TestBool)
+
+	err = json.Unmarshal([]byte(testStr), &boolObj)
+	if err != nil {
+		fmt.Println("have error for unmarshalling boolean value")
+	}
+
+	b1, _ := strconv.ParseBool(boolObj.KSettings.Untouch)
+	fmt.Println(b1)
+
+	fmt.Println(boolObj.KSettings.Untouch)
+
+	if boolObj.KSettings.Untouch == "true" {
+		fmt.Printf("it is boolean, %v, type is %T \n", boolObj.KSettings.Untouch, boolObj.KSettings.Untouch)
+	}
+	if boolObj.KSettings.Untouch == ""{
+		fmt.Println("user didnt set anything")	
+	}
+	if b1 {
+		fmt.Printf("it is boolean, %v, type is %T", boolObj.KSettings.Untouch, b1)
+	}
 	
 
 
