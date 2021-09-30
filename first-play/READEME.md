@@ -21,9 +21,37 @@ go version
 
 ## golang func
 
-## golang func普通类型声明
+一个典型的函数定义如下，使用关键字 func，参数可以有多个，返回值也支持有多个。特别地，package main 中的func main() 约定为可执行程序的入口。
 
-- 就是最简单的golang function的声明
+```golang
+func funcName(param1 Type1, param2 Type2, ...) (return1 Type3, ...) {
+    // body
+}
+
+
+// 例如，实现2个数的加法（一个返回值）和除法（多个返回值）：
+func add(num1 int, num2 int) int {
+	return num1 + num2
+}
+
+func div(num1 int, num2 int) (int, int) {
+	return num1 / num2, num1 % num2
+}
+func main() {
+	quo, rem := div(100, 17)
+	fmt.Println(quo, rem)     // 5 15
+	fmt.Println(add(100, 17)) // 117
+}
+```
+
+**也可以给返回值命名，简化 return，例如 add 函数可以改写为**
+
+```golang
+func add(num1 int, num2 int) (ans int) {
+	ans = num1 + num2
+	return
+}
+```
 
 ##  golang method
 
@@ -163,6 +191,29 @@ func main() {
 //&{0 0}
 //&{0 0}
 //&{5 7}
+```
+
+一般来说，指针通常在函数传递参数，或者给某个类型定义新的方法时使用。Go 语言中，参数是按值传递的，如果不使用指针，函数内部将会拷贝一份参数的副本，对参数的修改并不会影响到外部变量的值。如果参数使用指针，对参数的传递将会影响到外部变量。
+
+例如：
+
+```golang
+func add(num int) {
+	num += 1
+}
+
+func realAdd(num *int) {
+	*num += 1
+}
+
+func main() {
+	num := 100
+	add(num)
+	fmt.Println(num)  // 100，num 没有变化
+
+	realAdd(&num)
+	fmt.Println(num)  // 101，指针传递，num 被修改
+}
 ```
 
 ## golang引用类型-interface
@@ -734,6 +785,7 @@ func main(){
 
 - 创建切片,只需要指定切片类型，不需要指定切片的长度：
 
+#### 数组声明以及数组元素的修改
 ```golang
 // var sliceName []Type: Type是每个元素的类型
 
@@ -743,16 +795,53 @@ import (
 )
 
 func main(){
-    //创建了一个有2个元素，且每个元素都是string类型的切片，创建的同时完成初始化
+    //创建了一个有2个元素，且每个元素都是string类型的数组，创建的同时完成初始化
     var slieceString = []string{"Stringa", "Stringb"}
     fmt.Println("slieceString=", slieceString)//output: slieceString= [Stringa Stringb]
+
+    // 注意：数组不是切片，切片是数组的抽象
+    // 通过[]索引修改数组
+    arr := [5]int{1, 2, 3, 4, 5}
+    for i := 0; i < len(arr); i++ {
+      arr[i] += 100
+    }
+    fmt.Println(arr)  // [101 102 103 104 105]
 }
 
 ```
 
+#### 切片声明以及修改
 ```golang
-//获取切片类型
+// golang slice:
+// https://go.dev/blog/slices-intro
+// A slice can be created with the built-in function called make, which has the signature
+func make([]T, len, cap) []T
+// where T stands for the element type of the slice to be created. The make function takes a type, a length, and an optional capacity. When called, make allocates an array and returns a slice that refers to that array.
+
+
 //使用TypeOf函数，获取切片类型
+// 数组的长度不能改变，如果想拼接2个数组，或是获取子数组，需要使用切片。切片是数组的抽象。 切片使用数组作为底层结构。切片包含三个组件：容量，长度和指向底层数组的指针,切片可以随时进行扩展
+
+// 声明切片
+slice1 := make([]float32, 0) // 长度为0的切片
+slice2 := make([]float32, 3, 5) // [0 0 0] 长度为3容量为5的切片
+fmt.Println(len(slice2), cap(slice2)) // 3 5
+
+// 使用切片
+slice2 = append(slice2, 1, 2, 3, 4) // [0, 0, 0, 1, 2, 3, 4]
+fmt.Println(len(slice2), cap(slice2)) // 7 12
+// 子切片 [start, end)
+sub1 := slice2[3:] // [1 2 3 4]
+sub2 := slice2[:3] // [0 0 0]
+sub3 := slice2[1:4] // [0 0 1]
+// 合并切片
+combined := append(sub1, sub2...) // [1, 2, 3, 4, 0, 0, 0]
+
+
+// 声明切片时可以为切片设置容量大小，为切片预分配空间。在实际使用的过程中，如果容量不够，切片容量会自动扩展。
+// sub2... 是切片解构的写法，将切片解构为 N 个独立的元素。
+
+
 ```
 
 - 查看切片类型，使用TypeOf函数：
@@ -798,6 +887,17 @@ func main(){
 ```golang
 //var mapName map[keyType]valueType，声明一个key为keyType类型,value为valueType类型的map,名为mapName
 
+// 仅声明
+m1 := make(map[string]int)
+// 声明时初始化
+m2 := map[string]string{
+	"Sam": "Male",
+	"Alice": "Female",
+}
+// 赋值/修改
+m1["Tom"] = 18
+
+
 package main
 import (
     "fmt"
@@ -813,6 +913,18 @@ func main(){
     fmt.Println(herosMap) //output: map[hero1:宋江 hero2:卢俊义 hero3:徐达]
 }
 ```
+
+### map返回值为2个
+```golang
+// https://go.dev/blog/maps
+// A two-value assignment tests for the existence of a key:
+
+// In this statement, the first value (i) is assigned the value stored under the key "route". If that key doesn’t exist, i is the value type’s zero value (0). The second value (ok) is a bool that is true if the key exists in the map, and false if not.
+
+i, ok := m["route"]
+
+```
+
 
 - 获取map类型，依然是TypeOf函数：
 
@@ -1151,6 +1263,410 @@ func main(){
 // A speak aaa 9
 ```
 
+## Explicit Conversion
+
+```golang
+//Golang conventions
+// https://golang.org/ref/spec#Conversions
+newDataTypeVariable = T(oldDataTypeVariable)
+
+// Golang does not support implicit type conversion because of its robust type system.
+// Explicit Type Conversion
+//Explicit type conversion is special programming instruction that specifies what data type to treat a variable as (or an intermediate calculation result) in a given expression. For example, casting will ignore “extra” information (but never adds information to the type being cast).
+
+See the following code snippets of explicit type casting in Go.
+
+var badboys int = 1921
+
+// explicit type conversion
+var badboys2 float64 = float64(badboys)
+
+var badboys3 int64 = int64(badboys)
+
+var badboys4 uint = uint(badboys)
+
+
+//https://notes.shichao.io/gopl/ch7/
+// *bytes.Buffer must satisfy io.Writer
+var _ io.Writer = (*bytes.Buffer)(nil)
+
+```
+
+## golang switch
+```golang
+type Gender int8
+const (
+	MALE   Gender = 1
+	FEMALE Gender = 2
+)
+
+gender := MALE
+
+switch gender {
+case FEMALE:
+	fmt.Println("female")
+case MALE:
+	fmt.Println("male")
+default:
+	fmt.Println("unknown")
+}
+// male
+
+```
+
+在这里，使用了type 关键字定义了一个新的类型 Gender。
+
+使用 const 定义了 MALE 和 FEMALE 2 个常量，Go 语言中没有枚举(enum)的概念，一般可以用常量的方式来模拟枚举。
+
+和其他语言不同的地方在于，Go 语言的 switch 不需要 break，匹配到某个 case，执行完该 case 定义的行为后，默认不会继续往下执行。如果
+
+需要继续往下执行，需要使用 fallthrough，例如：
+
+```golang
+switch gender {
+case FEMALE:
+	fmt.Println("female")
+	fallthrough
+case MALE:
+	fmt.Println("male")
+	fallthrough
+default:
+	fmt.Println("unknown")
+}
+// 输出结果
+// male
+// unknown
+```
+
+## golang for循环
+
+```golang
+// for循环和java等没有区别
+sum := 0
+for i := 0; i < 10; i++ {
+	if sum > 50 {
+		break
+	}
+	sum += i
+}
+```
+
+如果是对数组(arr)、切片(slice)、字典(map)， 使用 for range 遍历:
+```golang
+// 如果是对数组进行遍历，需要借助索引
+nums := []int{10, 20, 30, 40}
+for i, num := range nums {
+	fmt.Println(i, num)
+}
+// 0 10
+// 1 20
+// 2 30
+// 3 40
+
+// 如果是对slice进行遍历，需要借助key, value
+m2 := map[string]string{
+	"Sam":   "Male",
+	"Alice": "Female",
+}
+
+for key, value := range m2 {
+	fmt.Println(key, value)
+}
+// Sam Male
+// Alice Female
+```
+
+## Golang Error Handling
+如果函数实现过程中，如果出现不能处理的错误，可以返回给调用者处理。比如我们调用标准库函数os.Open读取文件，os.Open 有2个返回值，第一个是 *File，第二个是 error， 如果调用成功，error 的值是 nil，如果调用失败，例如文件不存在，我们可以通过 error 知道具体的错误信息。
+
+```golang
+import (
+	"fmt"
+	"os"
+)
+
+func main() {
+	_, err := os.Open("filename.txt")
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+// open filename.txt: no such file or directory
+```
+
+**唯一亮点就是：可以通过 errorw.New 返回自定义的错误**
+
+```golang
+import (
+	"errors"
+	"fmt"
+)
+
+func hello(name string) error {
+	if len(name) == 0 {
+		return errors.New("error: name is null")
+	}
+	fmt.Println("Hello,", name)
+	return nil
+}
+
+// if的另外简洁写法
+func main() {
+	if err := hello(""); err != nil {
+		fmt.Println(err)
+	}
+}
+// error: name is null
+```
+
+### Panic
+
+https://go.dev/blog/defer-panic-and-recover
+
+类似于java中的Unchecked Exception. error 往往是能预知的错误，但是也可能出现一些不可预知的错误，例如数组越界，这种错误可能会导致程序非正常退出，在 Go 语言中称之为 panic。
+
+Panic is a built-in function that stops the ordinary flow of control and begins panicking. When the function F calls panic, execution of F stops, any deferred functions in F are executed normally, and then F returns to its caller. To the caller, F then behaves like a call to panic. The process continues up the stack until all functions in the current goroutine have returned, at which point the program crashes. Panics can be initiated by invoking panic directly. They can also be caused by runtime errors, such as out-of-bounds array accesses.
+
+Recover is a built-in function that regains control of a panicking goroutine. Recover is only useful inside deferred functions. During normal execution, a call to recover will return nil and have no other effect. If the current goroutine is panicking, a call to recover will capture the value given to panic and resume normal execution.
+
+```golang
+func get(index int) int {
+	arr := [3]int{2, 3, 4}
+	return arr[index]
+}
+
+func main() {
+	fmt.Println(get(5))
+	fmt.Println("finished")
+}
+```
+
+```shell
+# 以下是运行结果
+$ go run .
+panic: runtime error: index out of range [5] with length 3
+goroutine 1 [running]:
+exit status 2
+```
+
+```golang
+// 以下是一个完整的例子
+package main
+
+import "fmt"
+
+func main() {
+    f()
+    fmt.Println("Returned normally from f.")
+}
+
+func f() {
+    defer func() {
+        if r := recover(); r != nil {
+            fmt.Println("Recovered in f", r)
+        }
+    }()
+    fmt.Println("Calling g.")
+    g(0)
+    fmt.Println("Returned normally from g.")
+}
+
+func g(i int) {
+    if i > 3 {
+        fmt.Println("Panicking!")
+        panic(fmt.Sprintf("%v", i))
+    }
+    defer fmt.Println("Defer in g", i)
+    fmt.Println("Printing in g", i)
+    g(i + 1)
+}
+
+
+// 运行结果：
+// Calling g.
+Printing in g 0
+Printing in g 1
+Printing in g 2
+Printing in g 3
+Panicking!
+Defer in g 3
+Defer in g 2
+Defer in g 1
+Defer in g 0
+Recovered in f 4
+Returned normally from f.
+
+
+
+// If we remove the deferred function from f the panic is not recovered and reaches the top of the goroutine’s call stack, terminating the program. This modified program will output:
+Calling g.
+Printing in g 0
+Printing in g 1
+Printing in g 2
+Printing in g 3
+Panicking!
+Defer in g 3
+Defer in g 2
+Defer in g 1
+Defer in g 0
+panic: 4
+
+panic PC=0x2a9cd8
+[stack trace omitted]
+```
+
+### Golang Try Catch
+
+golang defer, recover and panic: https://go.dev/blog/defer-panic-and-recover
+
+在golang中是没有try...catch...的，但是golang提供了另外一种方式：defer 和 recover
+
+代码中使用defer后面跟一个function或者method调用，该defer会将对于某个function或者method的调用推送到一个执行列表中，defer所在的外部的function在return之前会执行该defer对应的function call
+
+**注意：**只要定义了defer语句，那么defer语句就一定会执行
+
+```golang
+func get(index int)(ret int){
+  // 使用defer定义异常处理的函数，协程退出之前，会执行完defer挂载的任务。也就是外部函数在return之前会执行defer对应的调用。只要get函数某行代码触发了panic，就会把控制权交给defer声明的异常处理函数
+  defer func(){
+    // 使用recover，如果recover不为nil，表明发生了异常
+    if r := recover();r!=nil{
+      fmt.Println("Some error happened", r)
+      // 使用recover将程序恢复正常，并将ret设置为-1，如果不设置ret，默认返回值为0
+      ret = -1
+    } 
+  }()
+
+  arr := [3]int{2,3,4}
+  return arr[index]
+}
+
+func main(){
+  fmt.Println(get(6))
+  fmt.Println("finished")
+}
+
+// 运行结果：
+// $ go run .
+// Some error happened! runtime error: index out of range [5] with length 3
+// -1
+// finished
+```
+
+defer可以用于以下场景：
+- 异常catch
+- clean-up functions
+
+```golang
+// https://go.dev/blog/defer-panic-and-recover
+// 如果没有defer的情况
+func CopyFile(dstName, srcName string) (written int64, err error) {
+    src, err := os.Open(srcName)
+    if err != nil {
+        return
+    }
+// 如果在下面的os.Create方法发生异常或者错误，那么dst.Close, src.Close将不会被执行
+    dst, err := os.Create(dstName)
+    if err != nil {
+        return
+    }
+
+    written, err = io.Copy(dst, src)
+    dst.Close()
+    src.Close()
+    return
+}
+
+// 使用defer的情况：
+func CopyFile(dstName, srcName string) (written int64, err error) {
+    src, err := os.Open(srcName)
+    if err != nil {
+        return
+    }
+    // 一旦os.Open发生错误，在return err之前，执行src.Close()
+    defer src.Close()
+
+    dst, err := os.Create(dstName)
+    if err != nil {
+        return
+    }
+    // 同理，在第二个return之前
+    defer dst.Close()
+
+    return io.Copy(dst, src)
+}
+
+```
+
+由上得知，defer的声明一定是在return之后的
+
+### defer rule 1
+
+A deferred function’s arguments are evaluated when the defer statement is evaluated.
+
+```golang
+package main
+
+import "fmt"
+
+func a() (i int){
+	test := 3
+  // 注意：defer语句打印的test的值不会是4，而是3，这里只会打印test的初始值
+	defer fmt.Println("defer test:",test)
+	test = 4
+	fmt.Println("This will print before defer, and test:", test)
+	return test
+}
+
+func main() {
+
+	fmt.Println("Hello, 世界")
+	a()
+	fmt.Println("This print at last")
+	
+}
+
+// 执行结果：
+// Hello, 世界
+// This will print before defer, and test: 4
+// defer test: 3
+// This print at last
+```
+
+### defer rule 2
+
+Deferred function calls are executed in Last In First Out order after the surrounding function returns.
+
+**永远记住：defer是在外部的function return之后才会被执行**, 后进先出原则
+
+```golang
+package main
+
+import "fmt"
+
+func b() (a int){
+	for i:=0; i<4; i++ {
+		defer fmt.Println(i);
+	}
+	fmt.Println("The for loop ends up.")
+	return 1
+}
+func main() {
+
+	fmt.Println("Hello, 世界")
+	b()
+	
+}
+
+// Hello, 世界
+// The for loop ends up.
+// 3
+// 2
+// 1
+// 0
+```
+
 ## resoruces
 
 https://cloud.tencent.com/developer/article/1386519
@@ -1168,3 +1684,7 @@ https://assets.digitalocean.com/books/how-to-code-in-go.pdf
 https://wizardforcel.gitbooks.io/go42/content/content/42_17_type.html
 
 https://gobuffalo.io/en/docs/getting-started/installation
+
+
+https://go.dev/blog/slices-intro
+https://pgk.go.dev
