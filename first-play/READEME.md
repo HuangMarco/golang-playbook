@@ -222,6 +222,40 @@ func main() {
 - 一旦将某个类型指定为interface类型，那么golang就会检查该类型所有的方法集合，查看是否实现interface里面的方法
 - golang interface声明
 
+案例1:
+
+```golang
+package main
+
+import "fmt"
+
+type Person interface{
+	getName() string
+}
+
+type Student struct{
+	age int
+	name string
+}
+
+//这里不会改变stu.name，所以声明指针类型方法pointer receiver还是value receiver都无所谓
+func (stu *Student) getName() string{
+	return stu.name
+}
+
+func main(){
+	xiaoming := &Student{
+		age : 18,
+		name: "xiaoming",
+	}
+	
+	fmt.Println(xiaoming.getName())
+}
+
+// print: xiaoming
+```
+
+案例2:
 ```golang
 
 package main
@@ -266,6 +300,33 @@ log("The creatures in ocean:", ocean)
 //如果Ocean没有实现String()方法，就会报错
 // src/e4/main.go:24:6: cannot use o (type Ocean) as type fmt.Stringer in argument to log:
         // Ocean does not implement fmt.Stringer (missing String method)
+```
+
+### 检测structure是否实现interface定义的方法
+
+如何确保某个类型实现了某个接口的所有方法呢？一般可以使用下面的方法进行检测，如果实现不完整，编译期将会报错。
+
+```golang
+var _ Person = (*Student)(nil)
+```
+
+* 将空值 nil 转换为 *Student 类型，再转换为 Person 接口，如果转换失败，说明 Student 并没有实现 Person 接口的所有方法。
+
+### 实例与接口之间的转换
+
+实例可以强制类型转换为接口，接口也可以强制类型转换为实例。
+
+```golang
+func main() {
+	var p Person = &Student{
+		name: "Tom",
+		age:  18,
+	}
+
+	stu := p.(*Student) // 接口转为实例
+	fmt.Println(stu.getAge())
+}
+
 ```
 
 - pointer receiver的methods set与value receiver的methods set是不同的，因为pointer receiver可以改动receiver，但是value receiver不能。只有pointer receiver才能满足interface的需要
@@ -1265,34 +1326,51 @@ func main(){
 
 ## Explicit Conversion
 
+https://golang.org/ref/spec#Conversions
+
 ```golang
 //Golang conventions
 // https://golang.org/ref/spec#Conversions
+
+
 newDataTypeVariable = T(oldDataTypeVariable)
 
 // Golang does not support implicit type conversion because of its robust type system.
 // Explicit Type Conversion
 //Explicit type conversion is special programming instruction that specifies what data type to treat a variable as (or an intermediate calculation result) in a given expression. For example, casting will ignore “extra” information (but never adds information to the type being cast).
 
-See the following code snippets of explicit type casting in Go.
-
+// See the following code snippets of explicit type casting in Go.
 var badboys int = 1921
 
 // explicit type conversion
 var badboys2 float64 = float64(badboys)
-
 var badboys3 int64 = int64(badboys)
-
 var badboys4 uint = uint(badboys)
 
-
+// 也可以看以下例子：
+// https://go101.org/article/value-conversions-assignments-and-comparisons.html
 //https://notes.shichao.io/gopl/ch7/
 // *bytes.Buffer must satisfy io.Writer
 var _ io.Writer = (*bytes.Buffer)(nil)
+// 将nil转为io.Writer类型，如果bytes.Buffer没有实现Writer接口的方法，转换将失败报错
+
+```
+
+### 空接口
+如果定义了一个没有任何方法的空接口，那么该接口可以表示任意类型
+```golang
+func main() {
+	m := make(map[string]interface{})
+	m["name"] = "Tom"
+	m["age"] = 18
+	m["scores"] = [3]int{98, 99, 85}
+	fmt.Println(m) // map[age:18 name:Tom scores:[98 99 85]]
+}
 
 ```
 
 ## golang switch
+
 ```golang
 type Gender int8
 const (
@@ -1688,3 +1766,4 @@ https://gobuffalo.io/en/docs/getting-started/installation
 
 https://go.dev/blog/slices-intro
 https://pgk.go.dev
+https://golang.org/doc/effective_go
