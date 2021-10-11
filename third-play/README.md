@@ -421,6 +421,18 @@ https://segmentfault.com/a/1190000018235929
 
 https://stackoverflow.com/questions/34266337/why-it-is-possible-to-redefine-err-in-multiple-return-statement-in-go
 
+## golang project 自动加载依赖
+
+```golang
+//使用go get的前提是，必须讲GO111MODULE设置为auto，否则会报unable to fetch github.com类似这种错误
+export GO111MODULE="auto"
+// 项目根目录下运行以下命令加载所有项目go.mod下的依赖
+go get -u ./...
+
+//如果依然有package缺失，继续执行
+go mod tidy //下载丢失的package或者移除不适用的package
+```
+
 ## fake unit tests
 
 https://github.com/maxbrunsfeld/counterfeiter#installing-counterfeiter-to-gopathbin
