@@ -39,4 +39,9 @@ func main(){
 
 	var input string
 	fmt.Scanln(&input)
+
+	//尝试更改capacity，由0更改到1，更改到2查看效果
+	ch := make(chan int,2)
+	ch <- 1
+	ch <- 2
 }

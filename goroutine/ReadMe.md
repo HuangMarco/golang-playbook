@@ -164,6 +164,54 @@ func pinger(c chan <- string)
 
 ### buffered channel
 
+- 记住：默认情况下声明的channel都是unbuffered的
+- unbuffered channel表示每一次single send(ch <-)将会被block，直到有goroutine执行receive动作(<- ch)
+- 如果buffered channel的capacity为1，表明
+
+By default, a channel has a buffer size of 0 (you get this with make(chan int)). This means that every single send will block until another goroutine receives from the channel. A channel of buffer size 1 can hold 1 element until sending blocks, so you'd get
+
+```go
+c := make(chan int, 1)
+c <- 1 // doesn't block
+c <- 2 // blocks until another goroutine receives from the channel
+```
+
+关于上面也可以查看：https://golang.org/doc/effective_go#channels
+
+同时一个很好的例子说明：
+
+```go
+package main
+
+import (
+    "fmt"
+    "time"
+)
+
+func receiver(ch <-chan int) {
+    time.Sleep(500 * time.Millisecond)
+    msg := <-ch
+    fmt.Printf("receive messages  %d from the channel\n", msg)
+}
+
+func main() {
+    start := time.Now()
+    zero_buffer_ch := make(chan int, 0)
+    go receiver(zero_buffer_ch)
+    zero_buffer_ch <- 444
+    elapsed := time.Since(start)    
+    fmt.Printf("Elapsed using zero_buffer channel: %v\n", elapsed)
+
+    restart := time.Now()
+    non_zero_buffer_ch := make(chan int, 1)
+    go receiver(non_zero_buffer_ch)
+    non_zero_buffer_ch <- 4444
+    reelapsed := time.Since(restart)
+    fmt.Printf("Elapsed using non zero_buffer channel: %v\n", reelapsed)
+}
+```
+
+
 ```golang
 ch := make(chan int, 100)
 ```
@@ -220,4 +268,103 @@ func main() {
 
 ## golang channel select
 
-- goroutine可以通过
+- 通过select关键字，可以对goroutine(也就是channel)做swith...case操作
+- 与switch case不同的是，select会一直等待直到所有的channel都ready
+- select通常与time package配合，使用场景：通常当你需要同步不同的操作的时候，使用select等待所有channel同时完成，从而继续到下一步
+
+```golang
+package main
+
+import (
+    "fmt"
+    "time"
+)
+
+func main() {
+
+    c1 := make(chan string)
+    c2 := make(chan string)
+
+    go func() {
+        time.Sleep(1 * time.Second)
+        c1 <- "one"
+    }()
+    go func() {
+        time.Sleep(2 * time.Second)
+        c2 <- "two"
+    }()
+
+    for i := 0; i < 2; i++ {
+        select {
+        case msg1 := <-c1:
+            fmt.Println("received", msg1)
+        case msg2 := <-c2:
+            fmt.Println("received", msg2)
+        }
+    }
+}
+```
+
+同样查看test-channel-select.go
+
+### select - default
+
+- 当select block中没有任何一个case ready的时候，执行default
+
+```golang
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	tick := time.Tick(100 * time.Millisecond)
+	boom := time.After(500 * time.Millisecond)
+	for {
+		select {
+		case <-tick:
+			fmt.Println("tick.")
+		case <-boom:
+			fmt.Println("BOOM!")
+			return
+		default:
+			fmt.Println("    .")
+			time.Sleep(50 * time.Millisecond)
+		}
+	}
+}
+```
+
+### exercise - Equivalent Binary Trees
+
+https://gist.github.com/kaipakartik/8120855
+
+## golang - sync
+
+https://tour.golang.org/concurrency/9
+
+如果说之前的select等都是为了让多个goroutine同时执行，那么sync的作用就是：一次只能允许一个协程运行，或者一次只能允许一个goroutine访问某个变量
+
+这个概念被称为mutual exclusion，为了简便来说，称之为mutex.记住哈，这只是个概念，而不是一个类库。
+
+golang针对于该概念提供类库:[sync.Mutex](https://golang.org/pkg/sync/#Mutex)且支持以下两种功能：
+
+- lock
+- unlock
+
+A Mutex is a mutual exclusion lock. The zero value for a Mutex is an unlocked mutex.
+Mutex是一个共有排他锁，0值代表unlocked状态
+
+A Mutex must not be copied after first use.
+
+```golang
+func (m *Mutex) Lock()
+// goroutine调用该方法来给m上锁，如果锁已经被使用了，那么该goroutine将会被阻塞直到mutex可以使用。一个被上了锁的mutex不属于任何一个goroutine，goroutine只能执行上锁解锁动作，goroutine a给mutext上锁，然后golang安排另外一个goroutine给该mutex解锁
+
+func (m *Mutex) Unlock()
+// goroutine调用该方法给m解锁，如果m本身没有被锁住，就会报runtime error
+```
+
+

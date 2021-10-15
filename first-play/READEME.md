@@ -1418,6 +1418,34 @@ default:
 
 ## golang for循环
 
+直接访问：https://tour.golang.org/flowcontrol/1
+
+
+- the init statement: executed before the first iteration
+- the condition expression: evaluated before every iteration
+- the post statement: executed at the end of every iteration
+
+for循环中的3条件彼此以分号分割，其中init和post可以省略
+
+```golang
+package main
+
+import "fmt"
+
+func main() {
+	sum := 1
+	for ; sum < 1000; {
+		sum += sum
+	}
+	fmt.Println(sum)
+}
+
+```
+
+如果省略了condition，那么for循环将永远执行
+
+
+
 ```golang
 // for循环和java等没有区别
 sum := 0
