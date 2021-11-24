@@ -1214,6 +1214,76 @@ func main(){
 
 http://c.biancheng.net/view/65.html
 
+结构体，pointer receiver和value receiver的区别：
+https://juejin.cn/post/6963476381728702501
+
+```go
+package main
+
+import "fmt"
+
+// Person ...
+type Person interface {
+    SetAge()
+    SetName()
+}
+
+// Teacher ...
+type Teacher struct {
+    Name string
+    Age  int
+}
+
+// SetAge ...
+func (p *Teacher) SetAge() {
+    p.Age = 24
+}
+
+// SetName ...
+func (p *Teacher) SetName() {
+    p.Name = "teacher"
+}
+
+// Student  ...
+type Student struct {
+    Name string
+    Age  int
+}
+
+// SetAge ...
+func (p Student) SetAge() {
+    p.Age = 16
+}
+
+// SetName ...
+func (p Student) SetName() {
+    p.Name = "student"
+}
+
+func main() {
+    var p1 Person = &Teacher{}
+    p1.SetAge()
+    p1.SetAge()
+    fmt.Printf("teacher: %+v \n", p1) // teacher: &{Name: Age:24}
+
+    var p2 Person = Student{}
+    p2.SetAge()
+    p2.SetAge()
+    fmt.Printf("Student: %+v \n", p2) // Student: {Name: Age:0}
+
+    var p3 Person = &Student{}
+    p3.SetAge()
+    p3.SetAge()
+    fmt.Printf("Student: %+v \n", p3) // Student: {Name: Age:0}
+
+    var p4 Person = Teacher{}
+    p4.SetAge()
+    p4.SetAge()
+    fmt.Printf("teacher: %+v \n", p4) // cannot use Teacher literal (type Teacher) as type Person in assignment: Teacher does not implement Person (SetAge method has pointer receiver)
+}
+
+```
+
 ### 结构体定义
 
 - golang中允许通过自定义方式，定义新的类型。，结构体就是这些类型中的一种，且是复合类型
