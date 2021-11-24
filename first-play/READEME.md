@@ -1217,6 +1217,8 @@ http://c.biancheng.net/view/65.html
 结构体，pointer receiver和value receiver的区别：
 https://juejin.cn/post/6963476381728702501
 
+https://cyent.github.io/golang/method/method_receiver/
+
 ```go
 package main
 
