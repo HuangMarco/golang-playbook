@@ -19,6 +19,11 @@ go version
 
 最大限度利用别人已有的网站资源，归为己用
 
+## package repository
+
+- package：在同一个目录下所有源码文件的集合。最重要的点在于目录名称就是package的名称，然后在该目录下包含一些source codes files
+- repository: 包含一个或者多个module.通常一个go repository只包含一个module,尽管go repository可以包含多个module. **go.mod**第一行即指明了module的path: `module github.wdf.sap.corp/xx/xxx`, **go.mod**中包含项目所依赖的packages
+
 ## golang func
 
 一个典型的函数定义如下，使用关键字 func，参数可以有多个，返回值也支持有多个。特别地，package main 中的func main() 约定为可执行程序的入口。
